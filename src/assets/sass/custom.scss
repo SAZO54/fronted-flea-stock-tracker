@@ -1,0 +1,69 @@
+// // カラーパレット
+// $pastel-purple: #faf5ff;
+// $pastel-dark-purple: #8075C2;
+// $pastel-pink: #ffdeeb;
+// $pastel-light-blue: #e0f7fa;
+// $gradient-bg: linear-gradient(to right, #fdfbfb, #ebedee);
+// $font-black: #595959;
+
+// body {
+//   font-family: 'Arial', sans-serif;
+//   // background-color: #f7f9fc;
+// }
+
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
+
+// CardItem
+.dropdown-item {
+  text-align: right;
+}
+
+.dropdown-item:hover, .dropdown-item:focus, .dropdown-item:active {
+  color: #c0455f;
+}
+
+.card-item {
+  width: 220px;
+  height: 160px;
+  margin: 25px 15px 0 25px;
+  box-shadow: 0 4px 12px #EBE2E7;
+  position: relative;
+}
+
+.card-item-text {
+  color: #7D798D;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  right: -40%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-weight: bold;
+}
+
+.component-card-item {
+  background: linear-gradient(to bottom, #ffdcea, #f4d7df4f);
+  border-radius: 20px;
+  color: #D06179;
+  border: #FEF9FA;
+}
+
+.bi-heart.active {
+  color: #E83E8C;
+}
+
+.heart_img {
+  padding: 10px;
+}
+
+
+.flea-market-icon {
+  width: 25px;
+  height: 25px;
+}
