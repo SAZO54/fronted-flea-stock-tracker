@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import axios from 'axios';
 import Vue3TagsInput from 'vue3-tags-input';
+import CompleteSubmitToast from './Base/ConfirmDeleteModal.vue';
 import UploadModal from './Base/UploadModal.vue';
 import ExhibitModal from './Base/ExhibitModal.vue';
 import ExhibitCard from './Base/ExhibitCard.vue';
 import { ref, computed, onBeforeMount, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import { toast } from 'vue3-toastify';
 
 onBeforeMount(async () => {
   await getProductItems();
@@ -116,6 +118,12 @@ function handleHide() {
 }
 
 /**
+ * Toast
+ */
+
+const toastMessage = ref("");
+
+/**
  * 画像をS3にアップロード 
  */
 async function uploadImageToS3(file: File) {
@@ -176,7 +184,6 @@ async function setProducts():Promise<void> {
     // S3アップロードが完了したら、productSubmitを呼び出す
     await productSubmit(uploadedImageUrls);
 
-    alert('商品の登録が完了しました！');
     backExhibitList();
 
   } catch (error) {
@@ -240,8 +247,21 @@ async function productSubmit(_uploadedImageUrls: any[]) {
       },
     });
 
-    console.log('API response:', response);
-    alert('商品の登録が完了しました！');
+    toastMessage.value = response.data.message;
+
+    console.log("toastMessage", toastMessage.value);
+
+    if (response) {
+      toast.success(toastMessage.value, {
+      position: "top-center", // トーストの表示位置
+      autoClose: 3000,       // 表示時間（ミリ秒）
+    });
+      // showToast.value = false;
+      // setTimeout(() => {
+      //   showToast.value = true;
+      // }, 100);
+    }
+    // alert('商品の登録が完了しました！');
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error('Error response:', error.response?.data);
@@ -401,6 +421,7 @@ watch(workId, () => {
         </form>
       </div>
     </div>
+    <!-- <CompleteSubmitToast :show="showToast" :message="toastMessage" /> -->
     <UploadModal ref="uploadModalRef" @show="handleShow" @hide="handleHide" @filesUploaded="handleFilesUploaded" />
     <ExhibitModal ref="exhibitModalRef" @show="handleShow" @hide="handleHide" @addExhibit="addExhibit" />
   </div>
