@@ -24,6 +24,13 @@ onBeforeMount(async () => {
   await getProductItems();
 });
 
+defineProps({
+  disabled: {
+    type: Boolean,
+    default: false,
+  }
+})
+
 /**
  * 商品項目_取得
  */
@@ -60,13 +67,14 @@ function addExhibit(): void {
 
 // 新たに追加: モーダルにデータを設定するためのメソッド
 function setData(data: any) {
-  exhibitName.value = data.exhibitName || '';
-  minPrice.value = data.minPrice || 0;
-  currentPrice.value = data.currentPrice || 0;
-  exhibitQuantity.value = data.exhibitQuantity || 1;
-  platform.value = data.platform || null;
-  currency.value = data.currency || null;
+  exhibitName.value = data?.exhibitName || data?.exhibit_display_name || '';
+  minPrice.value = data?.minPrice || data?.min_price || 0;
+  currentPrice.value = data?.currentPrice || data?.current_exhibit_price || 0;
+  exhibitQuantity.value = data?.exhibitQuantity || data?.exhibit_quantity_in_stock || 1;
+  platform.value = data?.platform || data?.exhibitor_platform_id || null;
+  currency.value = data?.currency || data?.money_currency_id || null;
 }
+
 
 function clearInputs() {
   exhibitName.value = '';
@@ -111,7 +119,7 @@ defineExpose({
             <form>
               <div class="mb-3">
                 <label for="inputQuantityStock" class="form-label wid-175">Exhibit Platform</label>
-                <select v-model="platform" class="form-control" id="platformSelect">
+                <select v-model="platform" class="form-control" id="platformSelect" :disabled="disabled">
                   <option v-for="platformItem in productItemsArray?.platform_data" 
                           :value="platformItem.exhibitor_platform_id" 
                           :key="platformItem.exhibitor_platform_id">
@@ -121,11 +129,11 @@ defineExpose({
               </div>
               <div class="mb-3">
                 <label for="exhibitName" class="form-label">Display Name</label>
-                <textarea v-model="exhibitName" rows="3" class="form-control" id="exhibitName" placeholder="Enter exhibit name"></textarea>
+                <textarea v-model="exhibitName" rows="3" class="form-control" id="exhibitName" :disabled="disabled" placeholder="Enter exhibit name"></textarea>
               </div>
               <div class="mb-3">
                 <label for="currency" class="form-label">Currency</label>
-                <select v-model="currency" class="form-control" id="currencySelect">
+                <select v-model="currency" class="form-control" id="currencySelect" :disabled="disabled">
                   <option v-for="currencyItem in productItemsArray?.currency_data" 
                           :value="currencyItem.money_currency_id" 
                           :key="currencyItem.money_currency_id">
@@ -135,19 +143,19 @@ defineExpose({
               </div>
               <div class="mb-3">
                 <label for="minPrice" class="form-label">Min Price</label>
-                <input v-model="minPrice" type="number" class="form-control" id="minPrice" placeholder="Enter min price" min="0" />
+                <input v-model="minPrice" type="number" class="form-control" id="minPrice" :disabled="disabled" placeholder="Enter min price" min="0" />
               </div>
               <div class="mb-3">
                 <label for="currentPrice" class="form-label">Current Exhibit Price</label>
-                <input v-model="currentPrice" type="number" class="form-control" id="currentPrice" placeholder="Enter current exhibit price" min="0" />
+                <input v-model="currentPrice" type="number" class="form-control" id="currentPrice" :disabled="disabled" placeholder="Enter current exhibit price" min="0" />
               </div>
               <div class="mb-3">
                 <label for="exhibitQuantity" class="form-label">Number of Exhibits</label>
-                <input v-model="exhibitQuantity" type="number" class="form-control" id="exhibitQuantity" placeholder="Enter exhibit quantity" min="1" />
+                <input v-model="exhibitQuantity" type="number" class="form-control" id="exhibitQuantity" :disabled="disabled" placeholder="Enter exhibit quantity" min="1" />
               </div>
             </form>
           </div>
-          <div class="modal-footer">
+          <div class="modal-footer" v-if="!disabled">
             <button type="button" class="btn btn-secondary cancel-btn" @click="hideModal">Cancel</button>
             <button type="button" class="btn btn-secondary add-btn" @click="addExhibit">Add Exhibit Info</button>
           </div>
@@ -158,6 +166,10 @@ defineExpose({
 </template>
 
 <style scoped>
+.form-control:disabled {
+  background-color: #f7eff38a;
+}
+
 .cancel-btn {
   background-color: #8dacc9b5;
   border: #8dacc9b5;

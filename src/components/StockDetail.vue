@@ -167,11 +167,7 @@ async function getProductItems():Promise<void> {
 const exhibitModalRef = ref<InstanceType<typeof ExhibitModal> | null>(null);
 const editingIndex = ref<number | null>(null);
 
-// function openExhibitModal():void {
-//   if (exhibitModalRef.value) {
-//     exhibitModalRef.value.showModal();
-//   }
-// }
+const isModalDisabled = ref(false);
 
 const exhibits = ref<{ 
   exhibitName: string; 
@@ -181,6 +177,20 @@ const exhibits = ref<{
   platform: number;
   currency: number;
 }[]>([]);
+
+function openDisabledExhibitModal(index: number) {
+  editingIndex.value = index;
+  const exhibitData = exhibitInfo.value[index];  // exhibitInfo.valueからデータを取得
+
+  // exhibitDataが正しいデータを持っているかをログで確認
+  console.log("exhibitData", exhibitData);
+
+  if (exhibitModalRef.value) {
+    isModalDisabled.value = true;
+    exhibitModalRef.value.setData(exhibitData);  // データがundefinedでないか確認
+    exhibitModalRef.value.showModal();
+  }
+}
 
 // function addExhibit(exhibitData: { exhibitName: any; minPrice: any; currentPrice: any; exhibitQuantity: any; platform: any; }) {
 //   console.log(exhibitData);
@@ -192,8 +202,6 @@ const exhibits = ref<{
 //     platform: exhibitData.platform,
 //     currecy: exhibitData.currency,
 //   });
-
-//   console.log("exhibits.value", exhibits.value);
 // }
 
 function handleShow() {
@@ -202,24 +210,6 @@ function handleShow() {
 
 function handleHide() {
   console.log('Upload modal is hidden');
-}
-
-function editExhibitModal(index: number) {
-  editingIndex.value = index;
-  const exhibitData = exhibits.value[index];
-
-  // モーダルに編集するデータを渡す
-  if (exhibitModalRef.value) {
-    exhibitModalRef.value.setData(exhibitData);
-    exhibitModalRef.value.showModal(); // モーダルを表示
-  }
-}
-
-function updateExhibitModal(updatedData: any) {
-  if (editingIndex.value !== null) {
-    exhibits.value[editingIndex.value] = updatedData;
-    editingIndex.value = null;
-  }
 }
 
 /**
@@ -500,6 +490,7 @@ function updateExhibitModal(updatedData: any) {
                 :exhibitQuantity="exhibit.exhibit_quantity_in_stock"
                 :platform="exhibit.exhibitor_platform_id"
                 :curency="exhibit.money_currency_id"
+                @click="openDisabledExhibitModal(index)"
               />
             </div>
             <!-- <ExhibitCard 
@@ -518,7 +509,7 @@ function updateExhibitModal(updatedData: any) {
       </div>
     </div>
     <UploadModal ref="uploadModalRef" @show="handleShow" @hide="handleHide" @filesUploaded="handleFilesUploaded" />
-    <ExhibitModal ref="exhibitModalRef" @show="handleShow" @hide="handleHide" @addExhibit="addExhibit" />
+    <ExhibitModal ref="exhibitModalRef" @show="handleShow" @hide="handleHide" :disabled="isModalDisabled"/>
   </div>
 </template>
 
