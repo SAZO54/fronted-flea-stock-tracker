@@ -10,6 +10,7 @@ import StockEdit from '../components/StockEdit.vue'
 import StockCreate from '../components/StockCreate.vue'
 import ShipStatus from '../components/ShipStatus.vue'
 import TransactionAnalysis from '../components/TransactionAnalysis.vue'
+import { useSidebarStore } from '../stores/sideBarStore'
 // import HubLogOut from '@/components/HubLogout.vue'
 
 const routes = [
@@ -82,6 +83,11 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to) => {
+  const sidebarStore = useSidebarStore();
+  sidebarStore.setActivePath(to.path);
 });
 
 export default router;
