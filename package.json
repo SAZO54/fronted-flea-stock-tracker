@@ -12,7 +12,7 @@
     "admin-lte": "^4.0.0-beta1",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
-    "pinia": "^2.2.1",
+    "pinia": "^2.2.4",
     "vue": "^3.4.35",
     "vue-router": "^4.0.13",
     "vue3-tags-input": "^1.0.12"

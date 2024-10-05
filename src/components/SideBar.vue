@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { useSidebarStore } from '../stores/sideBarStore';
 
 const isDropdownOpen = ref(false);
 
@@ -12,10 +12,9 @@ function accountStatus(): void {
 /**
  * page
  */
-const route = useRoute();
+const sidebarStore = useSidebarStore();
 
-const isActive = (path: string) => computed(() => route.path === path);
-
+const isActive = (path: string) => computed(() => sidebarStore.activePath.startsWith(path));
 
 </script>
 
@@ -177,6 +176,7 @@ const isActive = (path: string) => computed(() => route.path === path);
 
 .active-link {
   color: #E8A2B8;
+  font-weight: bold;
 }
 
 .icon-circle {
