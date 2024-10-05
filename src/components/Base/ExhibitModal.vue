@@ -11,7 +11,7 @@ const platform = ref<number | null>(null);
 const currency = ref<number | null>(null);
 
 const exhibitModal = ref<HTMLDivElement | null>(null);
-const emits = defineEmits(['show', 'hide', 'addExhibit']);
+const emits = defineEmits(['show', 'hide', 'addExhibit', 'updateExhibit']);
 let modal: bootstrap.Modal | null = null;
 
 onMounted(() => {
@@ -28,6 +28,10 @@ defineProps({
   disabled: {
     type: Boolean,
     default: false,
+  },
+  isEditing: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -53,6 +57,20 @@ async function getProductItems(): Promise<void> {
 
 function addExhibit(): void {
   emits('addExhibit', {
+    exhibitName: exhibitName.value,
+    currency: currency.value,
+    minPrice: minPrice.value,
+    currentPrice: currentPrice.value,
+    exhibitQuantity: exhibitQuantity.value,
+    platform: platform.value
+  });
+
+  clearInputs();
+  hideModal();
+}
+
+function updateExhibit(): void {
+  emits('updateExhibit', {
     exhibitName: exhibitName.value,
     currency: currency.value,
     minPrice: minPrice.value,
@@ -157,7 +175,8 @@ defineExpose({
           </div>
           <div class="modal-footer" v-if="!disabled">
             <button type="button" class="btn btn-secondary cancel-btn" @click="hideModal">Cancel</button>
-            <button type="button" class="btn btn-secondary add-btn" @click="addExhibit">Add Exhibit Info</button>
+            <button v-if="isEditing" type="button" class="btn btn-secondary add-btn" @click="updateExhibit">Update Exhibit Info</button>
+            <button v-else type="button" class="btn btn-secondary add-btn" @click="addExhibit">Add Exhibit Info</button>
           </div>
         </div>
       </div>

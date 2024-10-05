@@ -21,6 +21,7 @@ const storageSpaceId = ref('');
 // const productTags = ref('');
 const photos = ref<File[]>([]);
 const uploadPhotos = ref<File[]>([]);
+const exhibitInfo = ref<any>([]);
 const URL = window.URL || window.webkitURL;
 
 /**
@@ -108,6 +109,7 @@ onBeforeMount(async () => {
     characterId.value = productDetail.value.character_id;
     categoryId.value = productDetail.value.category_id;
     storageSpaceId.value = productDetail.value.storage_space_id;
+    exhibitInfo.value = productDetail.value.exhibit_infos;
   }
 
   await getProductItems();
@@ -180,10 +182,25 @@ async function deleteProduct(): Promise<void> {
 /**
  * exhibit modal
  */
-const exhibitModalRef = ref<InstanceType<typeof ExhibitModal> | null>(null);
+ const exhibitModalRef = ref<InstanceType<typeof ExhibitModal> | null>(null);
+const editingIndex = ref<number | null>(null);
+const isEditing = ref(false);
 
-function openExhibitModal():void {
+function openExhibitModal(): void {
+  isEditing.value = false;
   if (exhibitModalRef.value) {
+    exhibitModalRef.value.showModal();
+  }
+}
+
+function editExhibitModal(index: number): void {
+  editingIndex.value = index;
+  isEditing.value = true;
+  const exhibitData = exhibits.value[index] || exhibitInfo.value[index];
+
+  // モーダルに編集するデータを渡す
+  if (exhibitModalRef.value) {
+    exhibitModalRef.value.setData(exhibitData);
     exhibitModalRef.value.showModal();
   }
 }
@@ -199,16 +216,48 @@ const exhibits = ref<{
 
 function addExhibit(exhibitData: { exhibitName: any; minPrice: any; currentPrice: any; exhibitQuantity: any; platform: any; tags: any; }) {
   console.log(exhibitData);
-  exhibits.value.push({
-    exhibitName: exhibitData.exhibitName,
-    minPrice: exhibitData.minPrice,
-    currentPrice: exhibitData.currentPrice,
-    exhibitQuantity: exhibitData.exhibitQuantity,
-    platform: exhibitData.platform,
-    tags: exhibitData.tags || [],
-  });
+  if (editingIndex.value !== null) {
+    exhibits.value[editingIndex.value] = {
+      exhibitName: exhibitData.exhibitName,
+      minPrice: exhibitData.minPrice,
+      currentPrice: exhibitData.currentPrice,
+      exhibitQuantity: exhibitData.exhibitQuantity,
+      platform: exhibitData.platform,
+      tags: exhibitData.tags || [],
+    };
+    editingIndex.value = null;
+    isEditing.value = false;  // 編集が終わったら新規モードに戻す
+  } else {
+    exhibits.value.push({
+      exhibitName: exhibitData.exhibitName,
+      minPrice: exhibitData.minPrice,
+      currentPrice: exhibitData.currentPrice,
+      exhibitQuantity: exhibitData.exhibitQuantity,
+      platform: exhibitData.platform,
+      tags: exhibitData.tags || [],
+    });
+  }
+}
 
-  console.log("exhibits.value", exhibits.value);
+// function openDisabledExhibitModal(index: number) {
+//   editingIndex.value = index;
+//   const exhibitData = exhibitInfo.value[index];  // exhibitInfo.valueからデータを取得
+
+//   // exhibitDataが正しいデータを持っているかをログで確認
+//   console.log("exhibitData", exhibitData);
+
+//   if (exhibitModalRef.value) {
+//     isModalDisabled.value = true;
+//     exhibitModalRef.value.setData(exhibitData);  // データがundefinedでないか確認
+//     exhibitModalRef.value.showModal();
+//   }
+// }
+
+function updateExhibit(updatedData: any) {
+  if (editingIndex.value !== null) {
+    exhibits.value[editingIndex.value] = updatedData;  // データを更新
+    editingIndex.value = null;
+  }
 }
 
 function handleShow() {
@@ -371,29 +420,6 @@ async function productSubmit(_uploadedImageUrls: any[]) {
 //     imageUrl.value = URL.createObjectURL(imageFile.value); // 画像URLを生成
 //   }
 // }
-
-/**
- * Confirm_delete
- */
-//  function confirmDelete(id: number | null) {
-//   productId.value = id;
-//   const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-//   deleteModal.show();
-// }
-
-// async function deleteProduct() {
-//   try {
-//     const response = await axios.post(`http://localhost:5000/api/product/${productId.value}/delete`);
-//     console.log('削除成功:', response.data);
-//     alert('削除しました');
-//     const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
-//     deleteModal.hide();
-//     backExhibitList();
-//   } catch (error) {
-//     console.error('削除に失敗しました:', error);
-//     alert('削除に失敗しました');
-//   }
-// }
 </script>
 
 <template>
@@ -526,9 +552,21 @@ async function productSubmit(_uploadedImageUrls: any[]) {
                 :currentPrice="exhibit.currentPrice" 
                 :exhibitQuantity="exhibit.exhibitQuantity"
                 :platform="exhibit.platform"
+                @click="openExhibitModal()"
               />
             </div>
           </div>
+          <div v-for="(exhibit, index) in exhibitInfo" :key="index" class="mb-3">
+              <ExhibitCard
+                :title="exhibit.exhibit_display_name" 
+                :minPrice="exhibit.min_price" 
+                :currentPrice="exhibit.current_exhibit_price" 
+                :exhibitQuantity="exhibit.exhibit_quantity_in_stock"
+                :platform="exhibit.exhibitor_platform_id"
+                :curency="exhibit.money_currency_id"
+                @click="editExhibitModal(index)"
+              />
+            </div>
           <div class="btn-set">
             <button type="submit" class="btn btn-primary exhibit-btn" style="margin-right:5%; width: auto;" @click.prevent="openExhibitModal()">Add Exhibit Detail</button>
             <button type="submit" class="btn btn-primary submit-btn" style="margin-right:5%; width: auto;"@click.prevent="setProducts">Update</button>
@@ -536,32 +574,10 @@ async function productSubmit(_uploadedImageUrls: any[]) {
           </div>
         </form>
       </div>
-      <!-- <div> -->
-        <!-- 商品削除ボタン -->
-        <!-- <button class="btn btn-danger" @click="confirmDelete(productId)">削除</button> -->
-
-        <!-- 削除確認モーダル -->
-        <!-- <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">削除確認</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                本当に削除しますか？
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-                <button type="button" class="btn btn-danger" @click="deleteProduct">削除</button>
-              </div>
-            </div>
-          </div>
-        </div> -->
-      <!-- </div> -->
     </div>
     <UploadModal ref="uploadModalRef" @show="handleShow" @hide="handleHide" @filesUploaded="handleFilesUploaded" />
-    <ExhibitModal ref="exhibitModalRef" @show="handleShow" @hide="handleHide" @addExhibit="addExhibit" />
+    <ExhibitModal ref="exhibitModalRef" @show="handleShow" @hide="handleHide" :isEditing="isEditing" @addExhibit="addExhibit" 
+    @updateExhibit="updateExhibit" />
     <ConfirmDeleteModal ref="confirmDeleteModalRef" @show="handleShow" @hide="handleHide" @submitDeletion="deleteProduct" />
   </div>
 </template>

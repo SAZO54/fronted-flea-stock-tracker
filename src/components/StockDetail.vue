@@ -493,17 +493,6 @@ function handleHide() {
                 @click="openDisabledExhibitModal(index)"
               />
             </div>
-            <!-- <ExhibitCard 
-              v-for="(exhibit, index) in exhibits" 
-              :key="index" 
-              :title="exhibit.exhibitName" 
-              :minPrice="exhibit.minPrice" 
-              :currentPrice="exhibit.currentPrice" 
-              :exhibitQuantity="exhibit.exhibitQuantity"
-              :platform="exhibit.platform"
-              :curency="exhibit.currency"
-              @editExhibit="editExhibitModal(index)"
-            /> -->
           </div>
         </form>
       </div>
