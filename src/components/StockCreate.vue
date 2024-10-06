@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import axios from 'axios';
+import * as yup from 'yup';
 import Vue3TagsInput from 'vue3-tags-input';
 import UploadModal from './Base/UploadModal.vue';
 import ExhibitModal from './Base/ExhibitModal.vue';
@@ -116,13 +117,123 @@ function handleHide() {
 }
 
 /**
+ * validation
+ */
+const productNameError = ref('');
+const productCodeError = ref('');
+const priceError = ref('');
+const descriptionError = ref('');
+const quantityInStockError = ref('');
+const productUrlError = ref('');
+const workIdError = ref('');
+const characterIdError = ref('');
+const categoryIdError = ref('');
+const storageSpaceIdError = ref('');
+const uploadedImagesError = ref('');
+
+const scheme = yup.object({
+  productName: yup.string().max(256, 'Enter no more than 256 characters.').required('Product Name is required.'),
+  productCode: yup.string().max(64, 'Enter no more than 64 characters.'),  // 修正：256文字の代わりに64文字制限
+  price: yup.number().typeError('Product Price must be a number.').required('Price is required.'),
+  description: yup.string().max(1000, 'Enter no more than 1000 characters.'),
+  quantityInStock: yup.number().typeError('Quantity in stock must be a number.').max(300, 'Enter no more than 300.').required('Quantity in stock is required.'),
+  productUrl: yup.string().url('Specify the URL in the correct format.'),
+  workId: yup.number().required('Work is a required selection.'),
+  characterId: yup.number().required('Character is a required selection.'),
+  categoryId: yup.number().required('Category is a required selection.'),
+  storageSpaceId: yup.number().required('Storage Space is a required selection.'),
+  uploadedImages: yup.array().min(1, 'At least one image is required.')
+});
+
+async function onSubmitValidate(): Promise<boolean> {
+  // Reset error message
+  productNameError.value = '';
+  productCodeError.value = '';
+  priceError.value = '';
+  descriptionError.value = '';
+  quantityInStockError.value = '';
+  productUrlError.value = '';
+  workIdError.value = '';
+  characterIdError.value = '';
+  categoryIdError.value = '';
+  storageSpaceIdError.value = '';
+  uploadedImagesError.value = '';
+
+  try {
+    // Validate input values
+    await scheme.validate({
+      productName: productName.value,
+      productCode: productCode.value,
+      price: price.value,
+      description: description.value,
+      quantityInStock: quantityInStock.value,
+      productUrl: productUrl.value,
+      workId: workId.value,
+      characterId: characterId.value,
+      categoryId: categoryId.value,
+      storageSpaceId: storageSpaceId.value,
+      uploadedImages: uploadedImages.value,
+    }, { abortEarly: false });
+
+    return true; // バリデーション成功
+  } catch (err) {
+    // Check if error is an instance of Yup.ValidationError
+    if (err instanceof yup.ValidationError) {
+      // Set error messages for each field
+      err.inner.forEach((validationError) => {
+        switch (validationError.path) {
+          case 'productName':
+            productNameError.value = validationError.message;
+            break;
+          case 'productCode':
+            productCodeError.value = validationError.message;
+            break;
+          case 'price':
+            priceError.value = validationError.message;
+            break;
+          case 'description':
+            descriptionError.value = validationError.message;
+            break;
+          case 'quantityInStock':
+            quantityInStockError.value = validationError.message;
+            break;
+          case 'productUrl':
+            productUrlError.value = validationError.message;
+            break;
+          case 'workId':
+            workIdError.value = validationError.message;
+            break;
+          case 'characterId':
+            characterIdError.value = validationError.message;
+            break;
+          case 'categoryId':
+            categoryIdError.value = validationError.message;
+            break;
+          case 'storageSpaceId':
+            storageSpaceIdError.value = validationError.message;
+            break;
+          case 'uploadedImages':
+            uploadedImagesError.value = validationError.message;
+            break;
+          default:
+            console.error('Unexpected validation path:', validationError.path);
+        }
+      });
+    } else {
+      console.error('Unexpected error:', err);
+    }
+    return false; // バリデーション失敗
+  }
+}
+
+/**
  * 画像をS3にアップロード 
  */
 async function uploadImageToS3(file: File) {
   try {
     const formData = new FormData();
     formData.append('photo', file);
-    console.log("imege_response", formData);
+    console.log("image_response", formData);
 
     const response = await axios.post('http://localhost:5000/api/upload-images', formData, {
       headers: {
@@ -164,8 +275,16 @@ async function uploadImageToS3(file: File) {
 //   }
 // }
 
+
 async function setProducts():Promise<void> {
   try {
+    const isValid: boolean = await onSubmitValidate();
+    if (!isValid) {
+      // バリデーションエラーがある場合は、処理を終了する
+      console.log('Validation failed.');
+      return;
+    }
+
     // まず、全ての画像をS3にアップロード
     const uploadedImageUrls = [];
     for (const photo of photos.value) {
@@ -276,6 +395,7 @@ watch(workId, () => {
       <div class="card-text">Create</div>
       <div class="card-body">
         <form>
+          <span class="error-message" style="text-align: center;">{{ uploadedImagesError }}</span>
           <div class="image-collage">
             <div class="image-container" @click="openUploadModal">
               <div class="upload-placeholder">
@@ -309,31 +429,35 @@ watch(workId, () => {
               </div>
             </div>
           </div>
+          <span class="error-message">{{ productNameError }}</span>
           <div class="mb-3">
-            <label for="inputItemName" class="form-label">Product Name</label>
-            <input v-model="productName" type="text" class="form-control" id="inputItemName" aria-describedby="emailHelp">
+            <label for="inputItemName" class="form-label">Product Name<span class="asterisk">*</span></label>
+            <input v-model="productName" type="text" class="form-control" id="inputItemName" aria-describedby="emailHelp" :class="{ 'is-invalid': productNameError }">
           </div>
+          <span class="error-message">{{ productCodeError }}</span>
           <div class="mb-3">
             <label for="inputDisplayName" class="form-label">Product Code</label>
-            <input v-model="productCode" type="text" class="form-control" id="inputDisplayName">
+            <input v-model="productCode" type="text" class="form-control" id="inputDisplayName" :class="{ 'is-invalid': productCodeError }">
           </div>
+          <span class="error-message">{{ priceError }}</span>
           <div class="mb-3">
             <label for="inputQuantityStock" class="form-label wid-175
-            ">List Price</label>
-            <input v-model="price" type="number" class="form-control form-30" id="inputQuantityStock" min="0" step="10">
+            ">List Price<span class="asterisk">*</span></label>
+            <input v-model="price" type="number" class="form-control form-30" id="inputQuantityStock" min="0" step="10" :class="{ 'is-invalid': priceError }">
           </div>
+          <span class="error-message">{{ descriptionError }}</span>
           <div class="mb-3">
             <label for="inputItemDesciption" class="form-label">Description</label>
-            <textarea v-model="description" class="form-control" id="inputItemDesciption" rows="3"></textarea>
+            <textarea v-model="description" class="form-control" id="inputItemDesciption" rows="3" :class="{ 'is-invalid': descriptionError }"></textarea>
           </div>
+          <span class="error-message">{{ quantityInStockError }}</span>
           <div class="mb-3">
             <label for="inputQuantityStock" class="form-label wid-175
-            ">Quantity in stock</label>
-            <input v-model="quantityInStock" type="number" class="form-control form-30" id="inputQuantityStock" min="0" step="1">
+            ">Quantity in stock<span class="asterisk">*</span></label>
+            <input v-model="quantityInStock" type="number" class="form-control form-30" id="inputQuantityStock" min="0" step="1" :class="{ 'is-invalid': quantityInStockError }">
           </div>
           <div class="mb-3">
             <label for="inputItemTag" class="form-label">Product Tag</label>
-            <!-- <input v-model="productTags" type="text" class="form-control" id="inputItemTag"> -->
             <input type="hidden" name="tags" class="form-control" id="inputItemTag" :value="tagsJson"/>
             <vue3-tags-input
               v-model:tags="tags"
@@ -342,41 +466,46 @@ watch(workId, () => {
               class="custom-tags-input form-control"
             />
           </div>
+          <span class="error-message">{{ productUrlError }}</span>
           <div class="mb-3">
             <label for="inputItemName" class="form-label">Product URL</label>
-            <input v-model="productUrl" type="text" class="form-control" id="inputItemName" aria-describedby="emailHelp">
+            <input v-model="productUrl" type="text" class="form-control" id="inputItemName" aria-describedby="emailHelp" :class="{ 'is-invalid': productUrlError }">
           </div>
+          <span class="error-message">{{ workIdError }}</span>
           <div class="mb-3">
             <label for="inputQuantityStock" class="form-label wid-175
-            ">Work</label>
-            <select v-model="workId" class="form-control form-30" id="workSelect">
+            ">Work<span class="asterisk">*</span></label>
+            <select v-model="workId" class="form-control form-30" id="workSelect" :class="{ 'is-invalid': workIdError }">
               <option v-for="work in productItemsArray?.work_data || []" :value="work.work_id" :key="work.work_id">
                 {{ work.work_name }}
               </option>
             </select>
           </div>
+          <span class="error-message">{{ characterIdError }}</span>
           <div class="mb-3">
             <label for="workSelect" class="form-label wid-175
-            ">Character</label>
-            <select v-model="characterId" class="form-control form-30" id="characterSelect">
+            ">Character<span class="asterisk">*</span></label>
+            <select v-model="characterId" class="form-control form-30" id="characterSelect" :class="{ 'is-invalid': characterIdError }">
               <option v-for="character in filteredCharacters" :value="character.character_id" :key="character.character_id">
                 {{ character.character_name }}
               </option>
             </select>
           </div>
+          <span class="error-message">{{ categoryIdError }}</span>
           <div class="mb-3">
             <label for="inputQuantityStock" class="form-label wid-175
-            ">Category</label>
-            <select v-model="categoryId" class="form-control form-30" id="categorySelect">
+            ">Category<span class="asterisk">*</span></label>
+            <select v-model="categoryId" class="form-control form-30" id="categorySelect" :class="{ 'is-invalid': categoryIdError }">
               <option v-for="category in productItemsArray?.category_data || []" :value="category.category_id" :key="category.category_id">
                 {{ category.category_name }}
               </option>
             </select>
           </div>
+          <span class="error-message">{{ storageSpaceIdError }}</span>
           <div class="mb-3">
             <label for="inputQuantityStock" class="form-label wid-175
-            ">Storage Space</label>
-            <select v-model="storageSpaceId" class="form-control form-30" id="storageSpaceSelect">
+            ">Storage Space<span class="asterisk">*</span></label>
+            <select v-model="storageSpaceId" class="form-control form-30" id="storageSpaceSelect" :class="{ 'is-invalid': storageSpaceIdError }">
               <option v-for="storage_space in productItemsArray?.storage_space_data || []" :value="storage_space.storage_space_id" :key="storage_space.storage_space_id">
                 {{ storage_space.storage_space_name }}
               </option>
@@ -768,7 +897,6 @@ watch(workId, () => {
   box-shadow: none;
   border-color: #86B7FE;
 }
-
 </style>
 
 <style>
