@@ -1,5 +1,4 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div class="set-container">
@@ -13,7 +12,7 @@
         <div class="set-title">LINE</div>
       </div>
     </div>
-    <div class="card-container" style="margin-bottom: 0 !important;">
+    <div class="card-container" style="margin-bottom: 0 !important">
       <div class="card secu">
         <div class="set-title">Security</div>
       </div>
@@ -47,7 +46,7 @@
 .card {
   width: 250px;
   height: 200px;
-  box-shadow: 2px -1px 12px #EBE2E7;
+  box-shadow: 2px -1px 12px #ebe2e7;
   position: relative;
   text-align: center;
   border-radius: 10px;
@@ -74,7 +73,7 @@
 }
 
 .product-price {
-  color: #7D798D;
+  color: #7d798d;
   font-weight: bold;
   text-align: right;
 }
@@ -98,9 +97,9 @@
 }
 
 .btn-pink {
-  background-color: #ECB1C4;
-  border: #ECB1C4;
-  color: #FAFCFD;
+  background-color: #ecb1c4;
+  border: #ecb1c4;
+  color: #fafcfd;
   width: 120px;
   height: 32px;
   border-radius: 10px;
@@ -109,17 +108,19 @@
   display: flex;
 }
 
-.btn-pink:hover, .btn-pink:active, .btn-pink:focus {
-  background-color: #EDA3B8;
-  border: #EDA3B8;
-  color: #FAFCFD;
+.btn-pink:hover,
+.btn-pink:active,
+.btn-pink:focus {
+  background-color: #eda3b8;
+  border: #eda3b8;
+  color: #fafcfd;
 }
 
 .show-more-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 1523px
+  width: 1523px;
 }
 
 .show-more-btn {
@@ -135,6 +136,6 @@
 }
 
 .more-icon:hover {
-  color: #D06179;
+  color: #d06179;
 }
 </style>

@@ -1,20 +1,30 @@
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue';
+import { defineProps, defineEmits } from 'vue'
 
 // Propsの定義
 const props = defineProps<{
-  title?: string;
-  minPrice?: number;
-  currentPrice?: number;
-  exhibitQuantity?: number;
-  platform?: number;
-  curency?: number;
-}>();
+  title?: string
+  minPrice?: number
+  currentPrice?: number
+  exhibitQuantity?: number
+  platform?: number
+  curency?: number
+}>()
 
 // emit関数を定義
 const emit = defineEmits<{
-  (e: 'editExhibit', payload: { title?: string; minPrice?: number; currentPrice?: number; exhibitQuantity?: number; platform?: number; curency?: number }): void;
-}>();
+  (
+    e: 'editExhibit',
+    payload: {
+      title?: string
+      minPrice?: number
+      currentPrice?: number
+      exhibitQuantity?: number
+      platform?: number
+      curency?: number
+    }
+  ): void
+}>()
 
 // モーダルを開く処理
 const openEditModal = () => {
@@ -25,8 +35,8 @@ const openEditModal = () => {
     exhibitQuantity: props.exhibitQuantity,
     platform: props.platform,
     curency: props.curency,
-  });
-};
+  })
+}
 </script>
 
 <template>
@@ -36,37 +46,39 @@ const openEditModal = () => {
         <!-- プラットフォームのアイコン表示 -->
         <div v-if="platform === 1" class="card-top-icons">
           <a class="dropdown-item">
-            <img src="../../assets/merukari.png" alt="Flea Market Icon" class="flea-market-icon"/>
+            <img src="../../assets/merukari.png" alt="Flea Market Icon" class="flea-market-icon" />
           </a>
         </div>
         <div v-else-if="platform === 2" class="card-top-icons">
           <a class="dropdown-item">
-            <img src="../../assets/ebay.png" alt="Flea Market Icon" class="flea-market-icon"/>
+            <img src="../../assets/ebay.png" alt="Flea Market Icon" class="flea-market-icon" />
           </a>
         </div>
         <div v-else-if="platform === 4" class="card-top-icons">
           <a class="dropdown-item">
-            <img src="../../assets/rakuten.png" alt="Flea Market Icon" class="flea-market-icon"/>
+            <img src="../../assets/rakuten.png" alt="Flea Market Icon" class="flea-market-icon" />
           </a>
         </div>
         <div v-else-if="platform === 5" class="card-top-icons">
           <a class="dropdown-item">
-            <img src="../../assets/rakuma.png" alt="Flea Market Icon" class="flea-market-icon"/>
+            <img src="../../assets/rakuma.png" alt="Flea Market Icon" class="flea-market-icon" />
           </a>
         </div>
         <div v-else-if="platform === 6" class="card-top-icons">
           <a class="dropdown-item">
-            <img src="../../assets/yahuoku.png" alt="Flea Market Icon" class="flea-market-icon"/>
+            <img src="../../assets/yahuoku.png" alt="Flea Market Icon" class="flea-market-icon" />
           </a>
         </div>
         <div v-else class="card-top-icons">
-          <a style="height: 24px;" class="dropdown-item">
-            <img src="../../assets/icons/favorite.svg" alt="heart"/>
+          <a style="height: 24px" class="dropdown-item">
+            <img src="../../assets/icons/favorite.svg" alt="heart" />
           </a>
         </div>
       </div>
       <!-- カードの情報表示 -->
-      <div style="text-align: center!important" class="exhibit-card-text card-item-text">{{ title }}</div>
+      <div style="text-align: center !important" class="exhibit-card-text card-item-text">
+        {{ title }}
+      </div>
       <div class="exhibit-card-text card-item-text">Min Price: {{ minPrice }}</div>
       <div class="exhibit-card-text card-item-text">Current Exhibit Price: {{ currentPrice }}</div>
       <div class="exhibit-card-text card-item-text">Number of Exhibits: {{ exhibitQuantity }}</div>
@@ -76,7 +88,7 @@ const openEditModal = () => {
 
 <style scoped>
 .exhibit-card-text {
-  color: #7D798D;
+  color: #7d798d;
   position: relative;
   left: 50%;
   transform: translateX(-50%);

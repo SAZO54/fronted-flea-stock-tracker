@@ -5,14 +5,14 @@
       <div class="table-wrapper">
         <table class="table">
           <thead>
-              <tr>
-                <th scope="col">Order</th>
-                <th scope="col">Product</th>
-                <th scope="col">Customer</th>
-                <th scope="col">Total</th>
-                <th scope="col">Date</th>
-                <th scope="col"></th>
-              </tr>
+            <tr>
+              <th scope="col">Order</th>
+              <th scope="col">Product</th>
+              <th scope="col">Customer</th>
+              <th scope="col">Total</th>
+              <th scope="col">Date</th>
+              <th scope="col"></th>
+            </tr>
           </thead>
           <tbody>
             <tr>
@@ -75,14 +75,14 @@
   width: 600px;
   height: 740px;
   margin-top: 50px;
-  box-shadow: 0 4px 12px #A0A3B4;
+  box-shadow: 0 4px 12px #a0a3b4;
   position: relative;
 }
 
 .card-text {
-  background-color: #FAF3F6;
+  background-color: #faf3f6;
   border-radius: 10px 10px 0 0;
-  border-bottom: #B2B8C6;
+  border-bottom: #b2b8c6;
   color: #bf8f9f;
   font-weight: bold;
   font-size: 25px;
@@ -92,8 +92,8 @@
 
 .component-card {
   border-radius: 10px;
-  color: #D06179;
-  border: #B2B8C6;
+  color: #d06179;
+  border: #b2b8c6;
 }
 
 .table-wrapper {
@@ -104,14 +104,16 @@
 }
 
 .bi-heart.active {
-  color: #E83E8C;
+  color: #e83e8c;
 }
 
 .btn-detail {
   color: #f78aa9;
 }
 
-.btn-detail:hover, .btn-detail:active, .btn-detail:focus {
+.btn-detail:hover,
+.btn-detail:active,
+.btn-detail:focus {
   color: #f777a0;
 }
 </style>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import TransactionTable from './Base/TransactionTable.vue';
+import { ref } from 'vue'
+import TransactionTable from './Base/TransactionTable.vue'
 
 // const transactions = ref([
 //   { id: '1', name: 'Item A', status: 'Packing', destination: 'USA', platform: 'Mercari' },
@@ -11,35 +11,34 @@ import TransactionTable from './Base/TransactionTable.vue';
 /**
  * map button
  */
-const worldActive = ref(true);
+const worldActive = ref(true)
 
 function mapTabSwitch(): void {
-  worldActive.value = !worldActive.value;
+  worldActive.value = !worldActive.value
 }
 
-console.log("worldActive", worldActive.value);
-
+console.log('worldActive', worldActive.value)
 </script>
 
 <template>
   <div class="flex">
     <div>
-      <div class="ship-container" v-if="worldActive">
+      <div v-if="worldActive" class="ship-container">
         <div class="flex">
           <button class="btn btn-pink disabled" @click="mapTabSwitch">world</button>
           <button class="btn disabled-btn jp-btn" @click="mapTabSwitch">japan</button>
-        </div> 
-        <div class="map-container" v-if="worldActive">
-          <img src="../assets/world.png" alt="World Image" class="world-img"/>
+        </div>
+        <div v-if="worldActive" class="map-container">
+          <img src="../assets/world.png" alt="World Image" class="world-img" />
         </div>
       </div>
-      <div class="ship-container" v-else>
+      <div v-else class="ship-container">
         <div class="flex">
           <button class="btn disabled-btn" @click="mapTabSwitch">world</button>
           <button class="btn btn-pink jp-btn disabled" @click="mapTabSwitch">japan</button>
-        </div> 
+        </div>
         <div class="map-container">
-          <img src="../assets/japan.png" alt="Japan Image" class="japan-img"/>
+          <img src="../assets/japan.png" alt="Japan Image" class="japan-img" />
         </div>
       </div>
     </div>
@@ -63,19 +62,20 @@ console.log("worldActive", worldActive.value);
 }
 
 .btn-pink {
-  background-color: #ECB1C4 !important;
+  background-color: #ecb1c4 !important;
   height: 45px;
-  border: #ECB1C4;
-  color: #FAFCFD !important;
+  border: #ecb1c4;
+  color: #fafcfd !important;
 }
 
 .btn-pink:hover {
-  background-color: #EDA3B8;
-  border: #EDA3B8;
-  color: #FAFCFD;
+  background-color: #eda3b8;
+  border: #eda3b8;
+  color: #fafcfd;
 }
 
-.disabled-btn, .disabled-btn:hover {
+.disabled-btn,
+.disabled-btn:hover {
   background-color: #e1d1d694;
   height: 40px;
   border: #e1d1d6;

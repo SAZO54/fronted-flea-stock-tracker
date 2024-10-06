@@ -1,4 +1,4 @@
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia'
 
 export const useSidebarStore = defineStore('sidebar', {
   state: () => ({
@@ -6,7 +6,7 @@ export const useSidebarStore = defineStore('sidebar', {
   }),
   actions: {
     setActivePath(path: string) {
-      this.activePath = path;
-    }
-  }
-});
+      this.activePath = path
+    },
+  },
+})

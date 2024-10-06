@@ -16,17 +16,17 @@ import { useSidebarStore } from '../stores/sideBarStore'
 const routes = [
   {
     path: '/',
-    redirect: '/dashboard'
+    redirect: '/dashboard',
   },
   {
     path: '/dashboard',
     name: 'dashboard',
-    component: HomeTracker
+    component: HomeTracker,
   },
   {
     path: '/history',
     name: 'TransactionHistory',
-    component: TransactionHistory
+    component: TransactionHistory,
   },
   {
     path: '/setting',
@@ -36,7 +36,7 @@ const routes = [
   {
     path: '/messages',
     name: 'TransactionMessage',
-    component: TransactionMessage
+    component: TransactionMessage,
   },
   // {
   //   path: '/money',
@@ -46,48 +46,48 @@ const routes = [
   {
     path: '/stock',
     name: 'StockList',
-    component: StockList
+    component: StockList,
   },
   {
     path: '/stock/detail',
     name: 'StockDetail',
-    component: StockDetail
+    component: StockDetail,
   },
   {
     path: '/stock/edit',
     name: 'StockEdit',
-    component: StockEdit
+    component: StockEdit,
   },
   {
     path: '/stock/create',
     name: 'StockCreate',
-    component: StockCreate
+    component: StockCreate,
   },
   {
     path: '/transaction-status',
     name: 'ShipStatus',
-    component: ShipStatus
+    component: ShipStatus,
   },
   {
     path: '/analysis',
     name: 'TransactionAnalysis',
-    component: TransactionAnalysis
+    component: TransactionAnalysis,
   },
   // {
   //   path: '/logout',
   //   name: 'HubLogOut',
   //   component: HubLogOut
   // },
-];
+]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
-});
+})
 
 router.beforeEach((to) => {
-  const sidebarStore = useSidebarStore();
-  sidebarStore.setActivePath(to.path);
-});
+  const sidebarStore = useSidebarStore()
+  sidebarStore.setActivePath(to.path)
+})
 
-export default router;
+export default router

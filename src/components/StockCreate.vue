@@ -1,101 +1,114 @@
 <script setup lang="ts">
-import axios from 'axios';
-import * as yup from 'yup';
-import Vue3TagsInput from 'vue3-tags-input';
-import UploadModal from './Base/UploadModal.vue';
-import ExhibitModal from './Base/ExhibitModal.vue';
-import ExhibitCard from './Base/ExhibitCard.vue';
-import { ref, computed, onBeforeMount, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import axios from 'axios'
+import * as yup from 'yup'
+import Vue3TagsInput from 'vue3-tags-input'
+import UploadModal from './Base/UploadModal.vue'
+import ExhibitModal from './Base/ExhibitModal.vue'
+import ExhibitCard from './Base/ExhibitCard.vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 onBeforeMount(async () => {
-  await getProductItems();
-});
+  await getProductItems()
+})
 
 /**
  * tag
  */
-const tags = ref<string[]>([]);
+const tags = ref<string[]>([])
 
-const tagsJson = computed(() => JSON.stringify(tags.value));
+const tagsJson = computed(() => JSON.stringify(tags.value))
 
 const onTagsChanged = (newTags: string[]) => {
-  tags.value = newTags;
-};
+  tags.value = newTags
+}
 
 /**
  * pageTransition
  */
-const router = useRouter();
+const router = useRouter()
 
-function backExhibitList():void {
-  router.push('/stock');
+function backExhibitList(): void {
+  router.push('/stock')
 }
 
 /**
  * 商品項目_取得
  */
 interface ProductItems {
-  work_data: Array<{ work_id: number; work_name: string }>;
-  character_data: Array<{ character_id: number; character_name: string; work_id: number }>;
-  storage_space_data: Array<{ storage_space_id: number; storage_space_name: string }>;
-  category_data: Array<{ category_id: number; category_name: string }>;
-  platform_data: Array<{ exhibitor_platform_id: number; exhibitor_platform_name: string; money_currency_id: number; }>;
-  currency_data: Array<{ money_currency_id: number; currency_code: string }>;
+  work_data: Array<{ work_id: number; work_name: string }>
+  character_data: Array<{ character_id: number; character_name: string; work_id: number }>
+  storage_space_data: Array<{ storage_space_id: number; storage_space_name: string }>
+  category_data: Array<{ category_id: number; category_name: string }>
+  platform_data: Array<{
+    exhibitor_platform_id: number
+    exhibitor_platform_name: string
+    money_currency_id: number
+  }>
+  currency_data: Array<{ money_currency_id: number; currency_code: string }>
 }
 
-const productItemsArray = ref<ProductItems | null>(null);
+const productItemsArray = ref<ProductItems | null>(null)
 
-async function getProductItems():Promise<void> {
+async function getProductItems(): Promise<void> {
   try {
-    const response = await axios.get('http://localhost:5000/api/product-items');
-    productItemsArray.value = response.data;
-    console.log("productItemsArray.value", productItemsArray.value);
+    const response = await axios.get('http://localhost:5000/api/product-items')
+    productItemsArray.value = response.data
+    console.log('productItemsArray.value', productItemsArray.value)
   } catch (error) {
-    console.error('商品項目の取得に失敗しました:', error);
-    throw error;
+    console.error('商品項目の取得に失敗しました:', error)
+    throw error
   }
 }
 
 /**
  * upload images modal
  */
-const uploadModalRef = ref<InstanceType<typeof UploadModal> | null>(null);
-const uploadedImages = ref<string[]>([]);
+const uploadModalRef = ref<InstanceType<typeof UploadModal> | null>(null)
+const uploadedImages = ref<string[]>([])
 
-function openUploadModal():void {
+function openUploadModal(): void {
   if (uploadModalRef.value) {
-    uploadModalRef.value.showModal();
+    uploadModalRef.value.showModal()
   }
 }
 
 function handleFilesUploaded(files: File[]) {
-  uploadedImages.value = files.map(file => URL.createObjectURL(file));
+  uploadedImages.value = files.map((file) => URL.createObjectURL(file))
   photos.value = files
 }
 
 /**
  * exhibit modal
  */
-const exhibitModalRef = ref<InstanceType<typeof ExhibitModal> | null>(null);
+const exhibitModalRef = ref<InstanceType<typeof ExhibitModal> | null>(null)
 
-function openExhibitModal():void {
+function openExhibitModal(): void {
   if (exhibitModalRef.value) {
-    exhibitModalRef.value.showModal();
+    exhibitModalRef.value.showModal()
   }
 }
 
-const exhibits = ref<{ 
-  exhibitName: string; 
-  minPrice: number; 
-  currentPrice: number; 
-  exhibitQuantity: number; 
-  platform: number;
-  currecy: number;
-}[]>([]);
+const exhibits = ref<
+  {
+    exhibitName: string
+    minPrice: number
+    currentPrice: number
+    exhibitQuantity: number
+    platform: number
+    currecy: number
+  }[]
+>([])
 
-function addExhibit(exhibitData: { exhibitName: any; minPrice: any; currentPrice: any; exhibitQuantity: any; platform: any; currency: any; }) {
-  console.log(exhibitData);
+function addExhibit(exhibitData: {
+  exhibitName: any
+  minPrice: any
+  currentPrice: any
+  exhibitQuantity: any
+  platform: any
+  currency: any
+}) {
+  console.log(exhibitData)
   exhibits.value.push({
     exhibitName: exhibitData.exhibitName,
     minPrice: exhibitData.minPrice,
@@ -103,79 +116,89 @@ function addExhibit(exhibitData: { exhibitName: any; minPrice: any; currentPrice
     exhibitQuantity: exhibitData.exhibitQuantity,
     platform: exhibitData.platform,
     currecy: exhibitData.currency,
-  });
+  })
 
-  console.log("exhibits.value", exhibits.value);
+  console.log('exhibits.value', exhibits.value)
 }
 
 function handleShow() {
-  console.log('Upload modal is shown');
+  console.log('Upload modal is shown')
 }
 
 function handleHide() {
-  console.log('Upload modal is hidden');
+  console.log('Upload modal is hidden')
 }
 
 /**
  * validation
  */
-const productNameError = ref('');
-const productCodeError = ref('');
-const priceError = ref('');
-const descriptionError = ref('');
-const quantityInStockError = ref('');
-const productUrlError = ref('');
-const workIdError = ref('');
-const characterIdError = ref('');
-const categoryIdError = ref('');
-const storageSpaceIdError = ref('');
-const uploadedImagesError = ref('');
+const productNameError = ref('')
+const productCodeError = ref('')
+const priceError = ref('')
+const descriptionError = ref('')
+const quantityInStockError = ref('')
+const productUrlError = ref('')
+const workIdError = ref('')
+const characterIdError = ref('')
+const categoryIdError = ref('')
+const storageSpaceIdError = ref('')
+const uploadedImagesError = ref('')
 
 const scheme = yup.object({
-  productName: yup.string().max(256, 'Enter no more than 256 characters.').required('Product Name is required.'),
-  productCode: yup.string().max(64, 'Enter no more than 64 characters.'),  // 修正：256文字の代わりに64文字制限
+  productName: yup
+    .string()
+    .max(256, 'Enter no more than 256 characters.')
+    .required('Product Name is required.'),
+  productCode: yup.string().max(64, 'Enter no more than 64 characters.'), // 修正：256文字の代わりに64文字制限
   price: yup.number().typeError('Product Price must be a number.').required('Price is required.'),
   description: yup.string().max(1000, 'Enter no more than 1000 characters.'),
-  quantityInStock: yup.number().typeError('Quantity in stock must be a number.').max(300, 'Enter no more than 300.').required('Quantity in stock is required.'),
+  quantityInStock: yup
+    .number()
+    .typeError('Quantity in stock must be a number.')
+    .max(300, 'Enter no more than 300.')
+    .required('Quantity in stock is required.'),
   productUrl: yup.string().url('Specify the URL in the correct format.'),
   workId: yup.number().required('Work is a required selection.'),
   characterId: yup.number().required('Character is a required selection.'),
   categoryId: yup.number().required('Category is a required selection.'),
   storageSpaceId: yup.number().required('Storage Space is a required selection.'),
-  uploadedImages: yup.array().min(1, 'At least one image is required.')
-});
+  uploadedImages: yup.array().min(1, 'At least one image is required.'),
+})
 
 async function onSubmitValidate(): Promise<boolean> {
   // Reset error message
-  productNameError.value = '';
-  productCodeError.value = '';
-  priceError.value = '';
-  descriptionError.value = '';
-  quantityInStockError.value = '';
-  productUrlError.value = '';
-  workIdError.value = '';
-  characterIdError.value = '';
-  categoryIdError.value = '';
-  storageSpaceIdError.value = '';
-  uploadedImagesError.value = '';
+  productNameError.value = ''
+  productCodeError.value = ''
+  priceError.value = ''
+  descriptionError.value = ''
+  quantityInStockError.value = ''
+  productUrlError.value = ''
+  workIdError.value = ''
+  characterIdError.value = ''
+  categoryIdError.value = ''
+  storageSpaceIdError.value = ''
+  uploadedImagesError.value = ''
 
   try {
     // Validate input values
-    await scheme.validate({
-      productName: productName.value,
-      productCode: productCode.value,
-      price: price.value,
-      description: description.value,
-      quantityInStock: quantityInStock.value,
-      productUrl: productUrl.value,
-      workId: workId.value,
-      characterId: characterId.value,
-      categoryId: categoryId.value,
-      storageSpaceId: storageSpaceId.value,
-      uploadedImages: uploadedImages.value,
-    }, { abortEarly: false });
+    await scheme.validate(
+      {
+        productName: productName.value,
+        productCode: productCode.value,
+        price: price.value,
+        description: description.value,
+        quantityInStock: quantityInStock.value,
+        productUrl: productUrl.value,
+        workId: workId.value,
+        characterId: characterId.value,
+        categoryId: categoryId.value,
+        storageSpaceId: storageSpaceId.value,
+        uploadedImages: uploadedImages.value,
+      },
+      { abortEarly: false }
+    )
 
-    return true; // バリデーション成功
+    return true // バリデーション成功
   } catch (err) {
     // Check if error is an instance of Yup.ValidationError
     if (err instanceof yup.ValidationError) {
@@ -183,72 +206,72 @@ async function onSubmitValidate(): Promise<boolean> {
       err.inner.forEach((validationError) => {
         switch (validationError.path) {
           case 'productName':
-            productNameError.value = validationError.message;
-            break;
+            productNameError.value = validationError.message
+            break
           case 'productCode':
-            productCodeError.value = validationError.message;
-            break;
+            productCodeError.value = validationError.message
+            break
           case 'price':
-            priceError.value = validationError.message;
-            break;
+            priceError.value = validationError.message
+            break
           case 'description':
-            descriptionError.value = validationError.message;
-            break;
+            descriptionError.value = validationError.message
+            break
           case 'quantityInStock':
-            quantityInStockError.value = validationError.message;
-            break;
+            quantityInStockError.value = validationError.message
+            break
           case 'productUrl':
-            productUrlError.value = validationError.message;
-            break;
+            productUrlError.value = validationError.message
+            break
           case 'workId':
-            workIdError.value = validationError.message;
-            break;
+            workIdError.value = validationError.message
+            break
           case 'characterId':
-            characterIdError.value = validationError.message;
-            break;
+            characterIdError.value = validationError.message
+            break
           case 'categoryId':
-            categoryIdError.value = validationError.message;
-            break;
+            categoryIdError.value = validationError.message
+            break
           case 'storageSpaceId':
-            storageSpaceIdError.value = validationError.message;
-            break;
+            storageSpaceIdError.value = validationError.message
+            break
           case 'uploadedImages':
-            uploadedImagesError.value = validationError.message;
-            break;
+            uploadedImagesError.value = validationError.message
+            break
           default:
-            console.error('Unexpected validation path:', validationError.path);
+            console.error('Unexpected validation path:', validationError.path)
         }
-      });
+      })
     } else {
-      console.error('Unexpected error:', err);
+      console.error('Unexpected error:', err)
     }
-    return false; // バリデーション失敗
+    return false // バリデーション失敗
   }
 }
 
 /**
- * 画像をS3にアップロード 
+ * 画像をS3にアップロード
  */
 async function uploadImageToS3(file: File) {
   try {
-    const formData = new FormData();
-    formData.append('photo', file);
-    console.log("image_response", formData);
+    const formData = new FormData()
+    formData.append('photo', file)
+    console.log('image_response', formData)
 
     const response = await axios.post('http://localhost:5000/api/upload-images', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-    });
+    })
 
     if (response.data && response.data.s3Url) {
-      return response.data.s3Url;
+      return response.data.s3Url
     } else {
-      throw new Error('S3 URLが返されませんでした');
+      throw new Error('S3 URLが返されませんでした')
     }
   } catch (error) {
-    console.error('画像のアップロードに失敗しました:', error);
-    throw error;
+    console.error('画像のアップロードに失敗しました:', error)
+    throw error
   }
 }
 
@@ -275,57 +298,55 @@ async function uploadImageToS3(file: File) {
 //   }
 // }
 
-
-async function setProducts():Promise<void> {
+async function setProducts(): Promise<void> {
   try {
-    const isValid: boolean = await onSubmitValidate();
+    const isValid: boolean = await onSubmitValidate()
     if (!isValid) {
       // バリデーションエラーがある場合は、処理を終了する
-      console.log('Validation failed.');
-      return;
+      console.log('Validation failed.')
+      return
     }
 
     // まず、全ての画像をS3にアップロード
-    const uploadedImageUrls = [];
+    const uploadedImageUrls = []
     for (const photo of photos.value) {
-      const s3Url = await uploadImageToS3(photo);  // S3にアップロード
-      uploadedImageUrls.push(s3Url);  // アップロードされたURLを格納
+      const s3Url = await uploadImageToS3(photo) // S3にアップロード
+      uploadedImageUrls.push(s3Url) // アップロードされたURLを格納
     }
 
     // S3アップロードが完了したら、productSubmitを呼び出す
-    await productSubmit(uploadedImageUrls);
+    await productSubmit(uploadedImageUrls)
 
-    alert('商品の登録が完了しました！');
-    backExhibitList();
-
+    alert('商品の登録が完了しました！')
+    backExhibitList()
   } catch (error) {
-    console.error('商品の登録に失敗しました:', error);
-    alert('商品の登録に失敗しました。');
+    console.error('商品の登録に失敗しました:', error)
+    alert('商品の登録に失敗しました。')
   }
 }
 
 /**
  *  商品登録APIの定義
  */
-const productName = ref('');
-const productCode = ref('');
-const price = ref(0);
-const description = ref('');
-const quantityInStock = ref(0);
-const productUrl = ref('');
-const workId = ref(null);
-const characterId = ref(null);
-const categoryId = ref(null);
-const storageSpaceId = ref(null);
-const photos = ref<File[]>([]);
- 
+const productName = ref('')
+const productCode = ref('')
+const price = ref(0)
+const description = ref('')
+const quantityInStock = ref(0)
+const productUrl = ref('')
+const workId = ref(null)
+const characterId = ref(null)
+const categoryId = ref(null)
+const storageSpaceId = ref(null)
+const photos = ref<File[]>([])
+
 async function productSubmit(_uploadedImageUrls: any[]) {
   try {
     // 全ての画像をS3にアップロード
-    const uploadedImageUrls = [];
+    const uploadedImageUrls = []
     for (const photo of photos.value) {
-      const s3Url = await uploadImageToS3(photo);
-      uploadedImageUrls.push(s3Url);
+      const s3Url = await uploadImageToS3(photo)
+      uploadedImageUrls.push(s3Url)
     }
 
     // JSON形式でリクエストデータを構築
@@ -342,7 +363,7 @@ async function productSubmit(_uploadedImageUrls: any[]) {
       storage_space_id: storageSpaceId.value,
       product_tags: tags.value, // 配列に変換
       photo_urls: uploadedImageUrls, // S3から取得したURLを配列に追加
-      exhibit_info: exhibits.value.map(exhibit => ({
+      exhibit_info: exhibits.value.map((exhibit) => ({
         exhibitor_platform_id: exhibit.platform,
         money_currency_id: exhibit.currecy,
         exhibit_display_name: exhibit.exhibitName,
@@ -350,188 +371,324 @@ async function productSubmit(_uploadedImageUrls: any[]) {
         current_exhibit_price: exhibit.currentPrice.toString(),
         exhibit_quantity_in_stock: exhibit.exhibitQuantity.toString(),
       })),
-    };
+    }
 
     // JSON形式でリクエストを送信
     const response = await axios.post('http://localhost:5000/api/products', requestData, {
       headers: {
         'Content-Type': 'application/json',
       },
-    });
+    })
 
-    console.log('API response:', response);
-    alert('商品の登録が完了しました！');
+    console.log('API response:', response)
+    alert('商品の登録が完了しました！')
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error('Error response:', error.response?.data);
-      alert(`商品の登録に失敗しました。エラー: ${error.response?.data?.message || '詳細不明'}`);
+      console.error('Error response:', error.response?.data)
+      alert(`商品の登録に失敗しました。エラー: ${error.response?.data?.message || '詳細不明'}`)
     } else {
-      console.error('Error submitting form:', error);
-      alert('商品の登録に失敗しました。');
+      console.error('Error submitting form:', error)
+      alert('商品の登録に失敗しました。')
     }
   }
 }
 
 const filteredCharacters = computed(() => {
-  if ( productItemsArray.value) {
+  if (productItemsArray.value) {
     return productItemsArray.value.character_data.filter(
       (character) => character.work_id === workId.value
-    );
+    )
   }
-});
+})
 
 // watchを使ってcharacterIdをリセット
 watch(workId, () => {
-  characterId.value = null;
-});
+  characterId.value = null
+})
 </script>
 
 <template>
   <div class="detail-ctn">
-    <div style="display: flex;">
-      <img src="../assets/icons/undo.svg" alt="undo" class="material-symbols-outlined back-btn" @click="backExhibitList()"/>
+    <div style="display: flex">
+      <img
+        src="../assets/icons/undo.svg"
+        alt="undo"
+        class="material-symbols-outlined back-btn"
+        @click="backExhibitList()"
+      />
     </div>
     <div class="card component-card">
       <div class="card-text">Create</div>
       <div class="card-body">
         <form>
-          <span class="error-message" style="text-align: center;">{{ uploadedImagesError }}</span>
+          <span class="error-message" style="text-align: center">{{ uploadedImagesError }}</span>
           <div class="image-collage">
             <div class="image-container" @click="openUploadModal">
               <div class="upload-placeholder">
-                <img src="../assets/icons/add_circle.svg" alt="add_circle" class="material-symbols-outlined"/>
+                <img
+                  src="../assets/icons/add_circle.svg"
+                  alt="add_circle"
+                  class="material-symbols-outlined"
+                />
                 <p>Upload Image</p>
               </div>
             </div>
             <div class="image-collage">
-              <div class="image-container" v-for="(image, index) in uploadedImages" :key="index">
-                <img :src="image" alt="uploaded image" class="up-img"/>
+              <div v-for="(image, index) in uploadedImages" :key="index" class="image-container">
+                <img :src="image" alt="uploaded image" class="up-img" />
               </div>
             </div>
             <div class="image-container">
               <div class="upload-placeholder">
-                <img src="../assets/icons/emoji_nature.svg" alt="emoji_nature" class="material-symbols-outlined"/>
+                <img
+                  src="../assets/icons/emoji_nature.svg"
+                  alt="emoji_nature"
+                  class="material-symbols-outlined"
+                />
               </div>
             </div>
             <div class="image-container">
               <div class="upload-placeholder">
-                <img src="../assets/icons/emoji_nature.svg" alt="emoji_nature" class="material-symbols-outlined"/>
+                <img
+                  src="../assets/icons/emoji_nature.svg"
+                  alt="emoji_nature"
+                  class="material-symbols-outlined"
+                />
               </div>
             </div>
             <div class="image-container">
               <div class="upload-placeholder">
-                <img src="../assets/icons/emoji_nature.svg" alt="emoji_nature" class="material-symbols-outlined"/>
+                <img
+                  src="../assets/icons/emoji_nature.svg"
+                  alt="emoji_nature"
+                  class="material-symbols-outlined"
+                />
               </div>
             </div>
             <div class="image-container">
               <div class="upload-placeholder">
-                <img src="../assets/icons/emoji_nature.svg" alt="emoji_nature" class="material-symbols-outlined"/>
+                <img
+                  src="../assets/icons/emoji_nature.svg"
+                  alt="emoji_nature"
+                  class="material-symbols-outlined"
+                />
               </div>
             </div>
           </div>
           <span class="error-message">{{ productNameError }}</span>
           <div class="mb-3">
-            <label for="inputItemName" class="form-label">Product Name<span class="asterisk">*</span></label>
-            <input v-model="productName" type="text" class="form-control" id="inputItemName" aria-describedby="emailHelp" :class="{ 'is-invalid': productNameError }">
+            <label for="inputItemName" class="form-label"
+              >Product Name<span class="asterisk">*</span></label
+            >
+            <input
+              id="inputItemName"
+              v-model="productName"
+              type="text"
+              class="form-control"
+              aria-describedby="emailHelp"
+              :class="{ 'is-invalid': productNameError }"
+            />
           </div>
           <span class="error-message">{{ productCodeError }}</span>
           <div class="mb-3">
             <label for="inputDisplayName" class="form-label">Product Code</label>
-            <input v-model="productCode" type="text" class="form-control" id="inputDisplayName" :class="{ 'is-invalid': productCodeError }">
+            <input
+              id="inputDisplayName"
+              v-model="productCode"
+              type="text"
+              class="form-control"
+              :class="{ 'is-invalid': productCodeError }"
+            />
           </div>
           <span class="error-message">{{ priceError }}</span>
           <div class="mb-3">
-            <label for="inputQuantityStock" class="form-label wid-175
-            ">List Price<span class="asterisk">*</span></label>
-            <input v-model="price" type="number" class="form-control form-30" id="inputQuantityStock" min="0" step="10" :class="{ 'is-invalid': priceError }">
+            <label for="inputQuantityStock" class="form-label wid-175"
+              >List Price<span class="asterisk">*</span></label
+            >
+            <input
+              id="inputQuantityStock"
+              v-model="price"
+              type="number"
+              class="form-control form-30"
+              min="0"
+              step="10"
+              :class="{ 'is-invalid': priceError }"
+            />
           </div>
           <span class="error-message">{{ descriptionError }}</span>
           <div class="mb-3">
             <label for="inputItemDesciption" class="form-label">Description</label>
-            <textarea v-model="description" class="form-control" id="inputItemDesciption" rows="3" :class="{ 'is-invalid': descriptionError }"></textarea>
+            <textarea
+              id="inputItemDesciption"
+              v-model="description"
+              class="form-control"
+              rows="3"
+              :class="{ 'is-invalid': descriptionError }"
+            ></textarea>
           </div>
           <span class="error-message">{{ quantityInStockError }}</span>
           <div class="mb-3">
-            <label for="inputQuantityStock" class="form-label wid-175
-            ">Quantity in stock<span class="asterisk">*</span></label>
-            <input v-model="quantityInStock" type="number" class="form-control form-30" id="inputQuantityStock" min="0" step="1" :class="{ 'is-invalid': quantityInStockError }">
+            <label for="inputQuantityStock" class="form-label wid-175"
+              >Quantity in stock<span class="asterisk">*</span></label
+            >
+            <input
+              id="inputQuantityStock"
+              v-model="quantityInStock"
+              type="number"
+              class="form-control form-30"
+              min="0"
+              step="1"
+              :class="{ 'is-invalid': quantityInStockError }"
+            />
           </div>
           <div class="mb-3">
             <label for="inputItemTag" class="form-label">Product Tag</label>
-            <input type="hidden" name="tags" class="form-control" id="inputItemTag" :value="tagsJson"/>
+            <input
+              id="inputItemTag"
+              type="hidden"
+              name="tags"
+              class="form-control"
+              :value="tagsJson"
+            />
             <vue3-tags-input
               v-model:tags="tags"
               placeholder="タグを入力して下さい"
-              @on-tags-changed="onTagsChanged"
               class="custom-tags-input form-control"
+              @on-tags-changed="onTagsChanged"
             />
           </div>
           <span class="error-message">{{ productUrlError }}</span>
           <div class="mb-3">
             <label for="inputItemName" class="form-label">Product URL</label>
-            <input v-model="productUrl" type="text" class="form-control" id="inputItemName" aria-describedby="emailHelp" :class="{ 'is-invalid': productUrlError }">
+            <input
+              id="inputItemName"
+              v-model="productUrl"
+              type="text"
+              class="form-control"
+              aria-describedby="emailHelp"
+              :class="{ 'is-invalid': productUrlError }"
+            />
           </div>
           <span class="error-message">{{ workIdError }}</span>
           <div class="mb-3">
-            <label for="inputQuantityStock" class="form-label wid-175
-            ">Work<span class="asterisk">*</span></label>
-            <select v-model="workId" class="form-control form-30" id="workSelect" :class="{ 'is-invalid': workIdError }">
-              <option v-for="work in productItemsArray?.work_data || []" :value="work.work_id" :key="work.work_id">
+            <label for="inputQuantityStock" class="form-label wid-175"
+              >Work<span class="asterisk">*</span></label
+            >
+            <select
+              id="workSelect"
+              v-model="workId"
+              class="form-control form-30"
+              :class="{ 'is-invalid': workIdError }"
+            >
+              <option
+                v-for="work in productItemsArray?.work_data || []"
+                :key="work.work_id"
+                :value="work.work_id"
+              >
                 {{ work.work_name }}
               </option>
             </select>
           </div>
           <span class="error-message">{{ characterIdError }}</span>
           <div class="mb-3">
-            <label for="workSelect" class="form-label wid-175
-            ">Character<span class="asterisk">*</span></label>
-            <select v-model="characterId" class="form-control form-30" id="characterSelect" :class="{ 'is-invalid': characterIdError }">
-              <option v-for="character in filteredCharacters" :value="character.character_id" :key="character.character_id">
+            <label for="workSelect" class="form-label wid-175"
+              >Character<span class="asterisk">*</span></label
+            >
+            <select
+              id="characterSelect"
+              v-model="characterId"
+              class="form-control form-30"
+              :class="{ 'is-invalid': characterIdError }"
+            >
+              <option
+                v-for="character in filteredCharacters"
+                :key="character.character_id"
+                :value="character.character_id"
+              >
                 {{ character.character_name }}
               </option>
             </select>
           </div>
           <span class="error-message">{{ categoryIdError }}</span>
           <div class="mb-3">
-            <label for="inputQuantityStock" class="form-label wid-175
-            ">Category<span class="asterisk">*</span></label>
-            <select v-model="categoryId" class="form-control form-30" id="categorySelect" :class="{ 'is-invalid': categoryIdError }">
-              <option v-for="category in productItemsArray?.category_data || []" :value="category.category_id" :key="category.category_id">
+            <label for="inputQuantityStock" class="form-label wid-175"
+              >Category<span class="asterisk">*</span></label
+            >
+            <select
+              id="categorySelect"
+              v-model="categoryId"
+              class="form-control form-30"
+              :class="{ 'is-invalid': categoryIdError }"
+            >
+              <option
+                v-for="category in productItemsArray?.category_data || []"
+                :key="category.category_id"
+                :value="category.category_id"
+              >
                 {{ category.category_name }}
               </option>
             </select>
           </div>
           <span class="error-message">{{ storageSpaceIdError }}</span>
           <div class="mb-3">
-            <label for="inputQuantityStock" class="form-label wid-175
-            ">Storage Space<span class="asterisk">*</span></label>
-            <select v-model="storageSpaceId" class="form-control form-30" id="storageSpaceSelect" :class="{ 'is-invalid': storageSpaceIdError }">
-              <option v-for="storage_space in productItemsArray?.storage_space_data || []" :value="storage_space.storage_space_id" :key="storage_space.storage_space_id">
+            <label for="inputQuantityStock" class="form-label wid-175"
+              >Storage Space<span class="asterisk">*</span></label
+            >
+            <select
+              id="storageSpaceSelect"
+              v-model="storageSpaceId"
+              class="form-control form-30"
+              :class="{ 'is-invalid': storageSpaceIdError }"
+            >
+              <option
+                v-for="storage_space in productItemsArray?.storage_space_data || []"
+                :key="storage_space.storage_space_id"
+                :value="storage_space.storage_space_id"
+              >
                 {{ storage_space.storage_space_name }}
               </option>
             </select>
           </div>
           <div class="exhibit-card-container">
             <div v-for="(exhibit, index) in exhibits" :key="index" class="mb-3">
-              <ExhibitCard 
-                :title="exhibit.exhibitName" 
-                :minPrice="exhibit.minPrice" 
-                :currentPrice="exhibit.currentPrice" 
-                :exhibitQuantity="exhibit.exhibitQuantity"
+              <ExhibitCard
+                :title="exhibit.exhibitName"
+                :min-price="exhibit.minPrice"
+                :current-price="exhibit.currentPrice"
+                :exhibit-quantity="exhibit.exhibitQuantity"
                 :platform="exhibit.platform"
                 :curency="exhibit.currecy"
               />
             </div>
           </div>
           <div class="btn-set">
-            <button type="submit" class="btn btn-primary exhibit-btn" style="margin-right:5%; width: auto;" @click.prevent="openExhibitModal()">Add Exhibit Detail</button>
-            <button type="submit" class="btn btn-primary submit-btn" @click.prevent="setProducts">Submit</button>
-        </div>
+            <button
+              type="submit"
+              class="btn btn-primary exhibit-btn"
+              style="margin-right: 5%; width: auto"
+              @click.prevent="openExhibitModal()"
+            >
+              Add Exhibit Detail
+            </button>
+            <button type="submit" class="btn btn-primary submit-btn" @click.prevent="setProducts">
+              Submit
+            </button>
+          </div>
         </form>
       </div>
     </div>
-    <UploadModal ref="uploadModalRef" @show="handleShow" @hide="handleHide" @filesUploaded="handleFilesUploaded" />
-    <ExhibitModal ref="exhibitModalRef" @show="handleShow" @hide="handleHide" @addExhibit="addExhibit" />
+    <UploadModal
+      ref="uploadModalRef"
+      @show="handleShow"
+      @hide="handleHide"
+      @files-uploaded="handleFilesUploaded"
+    />
+    <ExhibitModal
+      ref="exhibitModalRef"
+      @show="handleShow"
+      @hide="handleHide"
+      @add-exhibit="addExhibit"
+    />
   </div>
 </template>
 
@@ -588,7 +745,8 @@ watch(workId, () => {
 }
 /*  */
 
-.header, .detail-ctn {
+.header,
+.detail-ctn {
   margin: 40px 40px 20px;
 }
 
@@ -597,12 +755,12 @@ watch(workId, () => {
   margin-top: 0 !important;
   margin-right: 10px;
   margin-left: 0 !important;
-  color: #D588A0;
+  color: #d588a0;
   cursor: pointer;
 }
 
 .btn-set {
-  margin:2%;
+  margin: 2%;
 }
 
 .edit-btn {
@@ -616,7 +774,9 @@ watch(workId, () => {
   padding-top: 2px;
 }
 
-.edit-btn:focus, .edit-btn:active, .edit-btn:hover {
+.edit-btn:focus,
+.edit-btn:active,
+.edit-btn:hover {
   background-color: #e59bb3 !important;
 }
 
@@ -646,7 +806,7 @@ watch(workId, () => {
 }
 
 .product-price {
-  color: #7D798D;
+  color: #7d798d;
   font-weight: bold;
   text-align: right;
 }
@@ -664,9 +824,9 @@ watch(workId, () => {
 }
 
 .btn-pink {
-  background-color: #ECB1C4;
-  border: #ECB1C4;
-  color: #FAFCFD;
+  background-color: #ecb1c4;
+  border: #ecb1c4;
+  color: #fafcfd;
   width: 110px;
   height: 32px;
   border-radius: 10px;
@@ -675,10 +835,12 @@ watch(workId, () => {
   display: flex;
 }
 
-.btn-pink:hover, .btn-pink:active, .btn-pink:focus {
-  background-color: #EDA3B8;
-  border: #EDA3B8;
-  color: #FAFCFD;
+.btn-pink:hover,
+.btn-pink:active,
+.btn-pink:focus {
+  background-color: #eda3b8;
+  border: #eda3b8;
+  color: #fafcfd;
 }
 
 .exhibit-btn {
@@ -686,10 +848,12 @@ watch(workId, () => {
   background-color: #fbb3ca !important;
   height: 45px;
   border: #fbb3ca;
-  color: #FAFCFD !important;
+  color: #fafcfd !important;
 }
 
-.exhibit-btn:hover, .exhibit-btn:active, .exhibit-btn:focus {
+.exhibit-btn:hover,
+.exhibit-btn:active,
+.exhibit-btn:focus {
   background-color: #ff93b6 !important;
   border: #ff93b6;
 }
@@ -699,10 +863,12 @@ watch(workId, () => {
   background-color: #ff93b6 !important;
   height: 45px;
   border: #ff93b6;
-  color: #FAFCFD !important;
+  color: #fafcfd !important;
 }
 
-.submit-btn:hover, .submit-btn:active, .submit-btn:focus {
+.submit-btn:hover,
+.submit-btn:active,
+.submit-btn:focus {
   background-color: #e97a9e !important;
   border: #e97a9e;
 }
@@ -713,7 +879,10 @@ watch(workId, () => {
   font-size: 19px;
 }
 
-.disabled-btn, .disabled-btn:hover, .disabled-btn:active, .disabled-btn:focus {
+.disabled-btn,
+.disabled-btn:hover,
+.disabled-btn:active,
+.disabled-btn:focus {
   background-color: #e1d1d6;
   height: 40px;
   border: #e1d1d6;
@@ -735,7 +904,7 @@ watch(workId, () => {
 
 .imgmode {
   font-size: 80px;
-  color: #ccc; 
+  color: #ccc;
   margin: 0 !important;
 }
 
@@ -743,15 +912,15 @@ watch(workId, () => {
   width: 1523px;
   height: 100%;
   margin-top: 30px;
-  box-shadow: 0 4px 12px #A0A3B4;
+  box-shadow: 0 4px 12px #a0a3b4;
   position: relative;
 }
 
 .card-text {
-  background-color: #FAF3F6;
+  background-color: #faf3f6;
   border-radius: 10px 10px 0 0;
-  border-bottom: #B2B8C6;
-  color:	#bf8f9f;
+  border-bottom: #b2b8c6;
+  color: #bf8f9f;
   font-weight: bold;
   font-size: 25px;
   text-align: left;
@@ -760,19 +929,21 @@ watch(workId, () => {
 
 .component-card {
   border-radius: 10px;
-  color: #D06179;
-  border: #B2B8C6;
+  color: #d06179;
+  border: #b2b8c6;
 }
 
 .bi-heart.active {
-  color: #E83E8C;
+  color: #e83e8c;
 }
 
 .btn-detail {
   color: #f78aa9;
 }
 
-.btn-detail:hover, .btn-detail:active, .btn-detail:focus {
+.btn-detail:hover,
+.btn-detail:active,
+.btn-detail:focus {
   color: #f777a0;
 }
 
@@ -895,7 +1066,7 @@ watch(workId, () => {
 
 .v3ti--focus {
   box-shadow: none;
-  border-color: #86B7FE;
+  border-color: #86b7fe;
 }
 </style>
 

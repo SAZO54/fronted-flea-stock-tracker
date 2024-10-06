@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import HeaderTracker from './components/Base/HeaderTracker.vue';
-import SideBar from './components/SideBar.vue';
-
+import HeaderTracker from './components/Base/HeaderTracker.vue'
+import SideBar from './components/SideBar.vue'
 </script>
 
 <template>
   <HeaderTracker />
-  <div style="display: flex; margin-top: 72px; margin-left: 300px;">
+  <div style="display: flex; margin-top: 72px; margin-left: 300px">
     <SideBar />
     <div class="content-area">
       <router-view />

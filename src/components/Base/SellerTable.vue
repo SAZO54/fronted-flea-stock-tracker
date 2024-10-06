@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { defineProps } from 'vue'
 
 const props = defineProps<{
-  cardTitle: string;
-  sellerAnalysis: () => void;
-}>();
+  cardTitle: string
+  sellerAnalysis: () => void
+}>()
 
-  // import { ref } from 'vue';
-  
-  // const isFavorited = ref(false);
-  
-  // function toggleFavorite() {
-  //   isFavorited.value = !isFavorited.value;
-  // }
+// import { ref } from 'vue';
+
+// const isFavorited = ref(false);
+
+// function toggleFavorite() {
+//   isFavorited.value = !isFavorited.value;
+// }
 </script>
 
 <template>
@@ -21,7 +21,7 @@ const props = defineProps<{
       <div class="card-text">{{ props.cardTitle }}</div>
       <button type="button" class="btn btn-pink" @click="props.sellerAnalysis">
         <div class="check">check</div>
-        <img src="../../assets/icons/monitoring.svg" alt="monitoring"/>
+        <img src="../../assets/icons/monitoring.svg" alt="monitoring" />
       </button>
     </div>
   </div>
@@ -33,7 +33,7 @@ const props = defineProps<{
   height: 260px;
   margin-left: 35px;
   margin-top: 50px;
-  box-shadow: 0 4px 12px #7D7D8F;
+  box-shadow: 0 4px 12px #7d7d8f;
   position: relative;
 }
 
@@ -60,18 +60,18 @@ const props = defineProps<{
 .component-card {
   background-color: #dcedff75;
   border-radius: 10px;
-  color: #D06179;
-  border: #B2B8C6;
+  color: #d06179;
+  border: #b2b8c6;
 }
 
 .bi-heart.active {
-  color: #E83E8C;
+  color: #e83e8c;
 }
 
 .btn-pink {
-  background-color: #ECB1C4;
-  border: #ECB1C4;
-  color: #FAFCFD;
+  background-color: #ecb1c4;
+  border: #ecb1c4;
+  color: #fafcfd;
   width: 90px;
   height: 40px;
   border-radius: 10px;
@@ -80,10 +80,11 @@ const props = defineProps<{
   display: flex;
 }
 
-.btn-pink:hover, .btn-pink:active, .btn-pink:focus {
-  background-color: #EDA3B8;
-  border: #EDA3B8;
-  color: #FAFCFD;
+.btn-pink:hover,
+.btn-pink:active,
+.btn-pink:focus {
+  background-color: #eda3b8;
+  border: #eda3b8;
+  color: #fafcfd;
 }
-
 </style>

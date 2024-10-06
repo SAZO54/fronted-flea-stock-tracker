@@ -1,50 +1,50 @@
 <script setup lang="ts">
-import axios from 'axios';
-import { ref, onBeforeMount, watch, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import axios from 'axios'
+import { ref, onBeforeMount, watch, computed } from 'vue'
+import { useRouter } from 'vue-router'
 
-const productInfoArray = ref<any[]>([]);
-const productPhotos = ref('');
-const totalItems = ref(0);
+const productInfoArray = ref<any[]>([])
+const productPhotos = ref('')
+const totalItems = ref(0)
 
 watch(productInfoArray, (newValue) => {
-  totalItems.value = newValue.length;
-  console.log("totalItems", totalItems.value);
-});
+  totalItems.value = newValue.length
+  console.log('totalItems', totalItems.value)
+})
 
 onBeforeMount(async () => {
-  await getProductInfo();
-});
+  await getProductInfo()
+})
 
 /**
  * sort
  */
- const selectedSort = ref('idorder');
-const idOrderFlg = ref(true);
-const latestFlg = ref(false);
-const alphabeticalFlg = ref(false);
+const selectedSort = ref('idorder')
+const idOrderFlg = ref(true)
+const latestFlg = ref(false)
+const alphabeticalFlg = ref(false)
 
 // ソートを実行するcomputedプロパティ
 const sortedProducts = computed(() => {
   // 配列のコピーを作成してからソート
-  const sortedArray = [...productInfoArray.value];
+  const sortedArray = [...productInfoArray.value]
 
   if (idOrderFlg.value) {
-    sortedArray.sort((a, b) => a.product_id - b.product_id);
+    sortedArray.sort((a, b) => a.product_id - b.product_id)
   } else if (latestFlg.value) {
-    sortedArray.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
+    sortedArray.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
   } else if (alphabeticalFlg.value) {
-    sortedArray.sort((a, b) => a.product_name.localeCompare(b.product_name));
+    sortedArray.sort((a, b) => a.product_name.localeCompare(b.product_name))
   }
 
-  return sortedArray;
-});
+  return sortedArray
+})
 
 // ソート条件を更新するメソッド
 function updateSortFlags() {
-  idOrderFlg.value = selectedSort.value === 'idorder';
-  latestFlg.value = selectedSort.value === 'latest';
-  alphabeticalFlg.value = selectedSort.value === 'alphabetical';
+  idOrderFlg.value = selectedSort.value === 'idorder'
+  latestFlg.value = selectedSort.value === 'latest'
+  alphabeticalFlg.value = selectedSort.value === 'alphabetical'
 }
 
 function pricePrefix(price: number) {
@@ -54,28 +54,28 @@ function pricePrefix(price: number) {
 /**
  * page transition
  */
-const router = useRouter();
+const router = useRouter()
 
-function detailsTransition(id: number):void {
-  router.push(`/stock/detail?id=${id}`);
+function detailsTransition(id: number): void {
+  router.push(`/stock/detail?id=${id}`)
 }
 
-function createTransition():void {
-  router.push(`/stock/create`);
+function createTransition(): void {
+  router.push(`/stock/create`)
 }
 
 /**
  * 商品情報_取得
  */
-async function getProductInfo():Promise<void> {
+async function getProductInfo(): Promise<void> {
   try {
-    const response = await axios.get('http://localhost:5000/api/fetch-products');
-    productInfoArray.value = response.data.products;
-    console.log("response", productInfoArray.value);
-    console.log("productPhotos", productPhotos.value);
+    const response = await axios.get('http://localhost:5000/api/fetch-products')
+    productInfoArray.value = response.data.products
+    console.log('response', productInfoArray.value)
+    console.log('productPhotos', productPhotos.value)
   } catch (error) {
-    console.error('商品の取得に失敗しました:', error);
-    throw error;
+    console.error('商品の取得に失敗しました:', error)
+    throw error
   }
 }
 
@@ -83,16 +83,15 @@ async function getProductInfo():Promise<void> {
  * Display additional Cards every 20
  */
 // const totalItems = productInfoArray.value.length;
-const itemsToShow = ref(20);
+const itemsToShow = ref(20)
 
-function showMoreItems():void {
+function showMoreItems(): void {
   if (itemsToShow.value + 20 <= totalItems.value) {
-    itemsToShow.value += 20;
+    itemsToShow.value += 20
   } else {
-    itemsToShow.value = totalItems.value;
+    itemsToShow.value = totalItems.value
   }
 }
-
 </script>
 
 <template>
@@ -100,10 +99,14 @@ function showMoreItems():void {
     <div class="header">
       <button type="button" class="btn btn-pink new-create" @click="createTransition()">
         <div style="padding-left: 5px">New Create</div>
-        <img src="../assets/icons/add_box.svg" alt="add_box" class="material-symbols-outlined plus-btn"/>
+        <img
+          src="../assets/icons/add_box.svg"
+          alt="add_box"
+          class="material-symbols-outlined plus-btn"
+        />
       </button>
       <div class="sort-options">
-        <select  v-model="selectedSort" @change="updateSortFlags">
+        <select v-model="selectedSort" @change="updateSortFlags">
           <option value="idorder" class="sort-item">ID order</option>
           <option value="latest" class="sort-item">Latest</option>
           <option value="alphabetical" class="sort-item">Alphabetical</option>
@@ -112,9 +115,14 @@ function showMoreItems():void {
     </div>
     <!-- 取得APIから表示させる -->
     <div class="card-container">
-      <div class="card component-card" v-for="info in sortedProducts" :key="info.product_id">
-        <img v-if="info.photos.length > 0" :src="info.photos[0].image_path" alt="Product Image" class="product-image"/>
-        <img v-else src="../assets/icons/kitty.jpg" alt="Product Image" class="product-image"/>
+      <div v-for="info in sortedProducts" :key="info.product_id" class="card component-card">
+        <img
+          v-if="info.photos.length > 0"
+          :src="info.photos[0].image_path"
+          alt="Product Image"
+          class="product-image"
+        />
+        <img v-else src="../assets/icons/kitty.jpg" alt="Product Image" class="product-image" />
         <div class="card-body">
           <div class="product-info">
             <div class="product-name">{{ info.product_name }}</div>
@@ -122,18 +130,56 @@ function showMoreItems():void {
           </div>
           <div class="icon-container">
             <button type="button" class="btn btn-pink" @click="detailsTransition(info.product_id)">
-              <img src="../assets/icons/open_in_full.svg" alt="open_in_full" class="material-symbols-outlined"/>
+              <img
+                src="../assets/icons/open_in_full.svg"
+                alt="open_in_full"
+                class="material-symbols-outlined"
+              />
             </button>
             <div v-if="info.exhibit_infos.length > 0">
-              <img v-if="info.exhibit_infos[0].exhibitor_platform_id === 1" src="../assets/merukari.png" alt="Flea Market Icon" class="flea-market-icon"/>
-              <img v-else-if="info.exhibit_infos[0].exhibitor_platform_id === 2" src="../assets/ebay.png" alt="Flea Market Icon" class="flea-market-icon"/>
-              <img v-else-if="info.exhibit_infos[0].exhibitor_platform_id === 4" src="../assets/rakuten.png" alt="Flea Market Icon" class="flea-market-icon"/>
-              <img v-else-if="info.exhibit_infos[0].exhibitor_platform_id === 5" src="../assets/rakuma.png" alt="Flea Market Icon" class="flea-market-icon"/>
-              <img v-else-if="info.exhibit_infos[0].exhibitor_platform_id === 6" src="../assets/yahuoku.png" alt="Flea Market Icon" class="flea-market-icon"/>
-              <img v-else src="../assets/icons/favorite.svg" alt="Flea Market Icon" class="flea-market-icon"/>
+              <img
+                v-if="info.exhibit_infos[0].exhibitor_platform_id === 1"
+                src="../assets/merukari.png"
+                alt="Flea Market Icon"
+                class="flea-market-icon"
+              />
+              <img
+                v-else-if="info.exhibit_infos[0].exhibitor_platform_id === 2"
+                src="../assets/ebay.png"
+                alt="Flea Market Icon"
+                class="flea-market-icon"
+              />
+              <img
+                v-else-if="info.exhibit_infos[0].exhibitor_platform_id === 4"
+                src="../assets/rakuten.png"
+                alt="Flea Market Icon"
+                class="flea-market-icon"
+              />
+              <img
+                v-else-if="info.exhibit_infos[0].exhibitor_platform_id === 5"
+                src="../assets/rakuma.png"
+                alt="Flea Market Icon"
+                class="flea-market-icon"
+              />
+              <img
+                v-else-if="info.exhibit_infos[0].exhibitor_platform_id === 6"
+                src="../assets/yahuoku.png"
+                alt="Flea Market Icon"
+                class="flea-market-icon"
+              />
+              <img
+                v-else
+                src="../assets/icons/favorite.svg"
+                alt="Flea Market Icon"
+                class="flea-market-icon"
+              />
             </div>
             <div v-else>
-              <img src="../assets/icons/favorite.svg" alt="Flea Market Icon" class="flea-market-icon"/>
+              <img
+                src="../assets/icons/favorite.svg"
+                alt="Flea Market Icon"
+                class="flea-market-icon"
+              />
             </div>
           </div>
         </div>
@@ -157,12 +203,16 @@ function showMoreItems():void {
       </div> -->
       <!--  -->
       <div v-if="itemsToShow < totalItems" class="show-more-container">
-        <button @click="showMoreItems" class="show-more-btn">
-          <img src="../assets/icons/expand_circle_down.svg" alt="expand_circle_down" class="material-symbols-outlined more-icon"/>
+        <button class="show-more-btn" @click="showMoreItems">
+          <img
+            src="../assets/icons/expand_circle_down.svg"
+            alt="expand_circle_down"
+            class="material-symbols-outlined more-icon"
+          />
         </button>
       </div>
     </div>
-  </div> 
+  </div>
 </template>
 
 <style scoped>
@@ -181,7 +231,9 @@ function showMoreItems():void {
   border-radius: 10px !important;
 }
 
-.new-create:focus, .new-create:active, .new-create:hover {
+.new-create:focus,
+.new-create:active,
+.new-create:hover {
   background-color: #e59bb3 !important;
 }
 
@@ -202,12 +254,12 @@ function showMoreItems():void {
 .card {
   width: 250px;
   height: 330px;
-  box-shadow: 0 4px 12px #EBE2E7;
+  box-shadow: 0 4px 12px #ebe2e7;
   position: relative;
   text-align: center;
   border-radius: 20px;
   background: linear-gradient(to left, #ffdceaad, #fff2f66b);
-  color: #D06179;
+  color: #d06179;
   margin: 20px;
 }
 
@@ -231,7 +283,7 @@ function showMoreItems():void {
 }
 
 .product-price {
-  color: #7D798D;
+  color: #7d798d;
   font-weight: bold;
   text-align: right;
   font-size: 20px;
@@ -262,9 +314,9 @@ function showMoreItems():void {
 }
 
 .btn-pink {
-  background-color: #ECB1C4;
-  border: #ECB1C4;
-  color: #FAFCFD;
+  background-color: #ecb1c4;
+  border: #ecb1c4;
+  color: #fafcfd;
   width: 35px;
   height: 35px;
   border-radius: 50%;
@@ -273,17 +325,19 @@ function showMoreItems():void {
   display: flex;
 }
 
-.btn-pink:hover, .btn-pink:active, .btn-pink:focus {
-  background-color: #EDA3B8;
-  border: #EDA3B8;
-  color: #FAFCFD;
+.btn-pink:hover,
+.btn-pink:active,
+.btn-pink:focus {
+  background-color: #eda3b8;
+  border: #eda3b8;
+  color: #fafcfd;
 }
 
 .show-more-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 1523px
+  width: 1523px;
 }
 
 .show-more-btn {
@@ -299,6 +353,6 @@ function showMoreItems():void {
 }
 
 .more-icon:hover {
-  color: #D06179;
+  color: #d06179;
 }
 </style>

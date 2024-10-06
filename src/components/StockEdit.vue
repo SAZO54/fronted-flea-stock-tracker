@@ -1,37 +1,37 @@
 <script setup lang="ts">
-import axios from 'axios';
-import Vue3TagsInput from 'vue3-tags-input';
-import UploadModal from './Base/UploadModal.vue';
-import ConfirmDeleteModal from './Base/ConfirmDeleteModal.vue';
-import ExhibitModal from './Base/ExhibitModal.vue';
-import ExhibitCard from './Base/ExhibitCard.vue';
-import { ref, computed, onBeforeMount } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import axios from 'axios'
+import Vue3TagsInput from 'vue3-tags-input'
+import UploadModal from './Base/UploadModal.vue'
+import ConfirmDeleteModal from './Base/ConfirmDeleteModal.vue'
+import ExhibitModal from './Base/ExhibitModal.vue'
+import ExhibitCard from './Base/ExhibitCard.vue'
+import { ref, computed, onBeforeMount } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
-const productName = ref('');
-const productCode = ref('');
-const price = ref(0);
-const description = ref('');
-const quantityInStock = ref(0);
-const productUrl = ref('');
-const workId = ref('');
-const characterId = ref('');
-const categoryId = ref('');
-const storageSpaceId = ref('');
+const productName = ref('')
+const productCode = ref('')
+const price = ref(0)
+const description = ref('')
+const quantityInStock = ref(0)
+const productUrl = ref('')
+const workId = ref('')
+const characterId = ref('')
+const categoryId = ref('')
+const storageSpaceId = ref('')
 // const productTags = ref('');
-const photos = ref<File[]>([]);
-const uploadPhotos = ref<File[]>([]);
-const URL = window.URL || window.webkitURL;
+const photos = ref<File[]>([])
+const uploadPhotos = ref<File[]>([])
+const URL = window.URL || window.webkitURL
 
 /**
  * pageTransition
  */
-const router = useRouter();
-const productId = ref<number | null>(null);
-const productDetail = ref<any>(null);
+const router = useRouter()
+const productId = ref<number | null>(null)
+const productDetail = ref<any>(null)
 
-function backExhibitList():void {
-  router.push('/stock');
+function backExhibitList(): void {
+  router.push('/stock')
 }
 
 function detailExhibit(): void {
@@ -40,12 +40,12 @@ function detailExhibit(): void {
 
 async function fetchProductDetails() {
   try {
-    const response = await axios.get(`http://localhost:5000/api/product-detail/${productId.value}`);
-    productDetail.value = response.data.product;
-    console.log("response", productDetail.value);
+    const response = await axios.get(`http://localhost:5000/api/product-detail/${productId.value}`)
+    productDetail.value = response.data.product
+    console.log('response', productDetail.value)
   } catch (error) {
-    console.error('商品詳細の取得に失敗しました:', error);
-    throw error;
+    console.error('商品詳細の取得に失敗しました:', error)
+    throw error
   }
 }
 
@@ -71,134 +71,142 @@ async function fetchProductDetails() {
 /**
  * upload images modal
  */
-const uploadModalRef = ref<InstanceType<typeof UploadModal> | null>(null);
-const uploadedImages = ref<string[]>([]);
+const uploadModalRef = ref<InstanceType<typeof UploadModal> | null>(null)
+const uploadedImages = ref<string[]>([])
 
-function openUploadModal():void {
+function openUploadModal(): void {
   if (uploadModalRef.value) {
-    uploadModalRef.value.showModal();
+    uploadModalRef.value.showModal()
   }
 }
 
 function handleFilesUploaded(files: File[]) {
-  uploadedImages.value = files.map(file => URL.createObjectURL(file));
+  uploadedImages.value = files.map((file) => URL.createObjectURL(file))
   photos.value = files
 }
 
-
 onBeforeMount(async () => {
-  const route = useRoute();
-  const id = route.query.id;
-  productId.value = id ? parseInt(id as string, 10) : null;
-  console.log("productId.value", productId.value);
-  
+  const route = useRoute()
+  const id = route.query.id
+  productId.value = id ? parseInt(id as string, 10) : null
+  console.log('productId.value', productId.value)
+
   if (productId.value !== null) {
-    await fetchProductDetails();
-    uploadPhotos.value = productDetail.value.photos;
-    console.log("uploadPhotos", uploadPhotos.value);
-    productName.value = productDetail.value.product_name;
-    productCode.value = productDetail.value.product_code;
-    price.value = productDetail.value.price;
-    description.value = productDetail.value.description;
-    quantityInStock.value = productDetail.value.quantity_in_stock;
-    tags.value = productDetail.value.tags;
-    console.log("tags", tags.value);
-    productUrl.value = productDetail.value.product_url;
-    workId.value = productDetail.value.work_id;
-    characterId.value = productDetail.value.character_id;
-    categoryId.value = productDetail.value.category_id;
-    storageSpaceId.value = productDetail.value.storage_space_id;
+    await fetchProductDetails()
+    uploadPhotos.value = productDetail.value.photos
+    console.log('uploadPhotos', uploadPhotos.value)
+    productName.value = productDetail.value.product_name
+    productCode.value = productDetail.value.product_code
+    price.value = productDetail.value.price
+    description.value = productDetail.value.description
+    quantityInStock.value = productDetail.value.quantity_in_stock
+    tags.value = productDetail.value.tags
+    console.log('tags', tags.value)
+    productUrl.value = productDetail.value.product_url
+    workId.value = productDetail.value.work_id
+    characterId.value = productDetail.value.character_id
+    categoryId.value = productDetail.value.category_id
+    storageSpaceId.value = productDetail.value.storage_space_id
   }
 
-  await getProductItems();
-});
+  await getProductItems()
+})
 
 /**
  * tag
  */
-const tags = ref<string[]>([]);
+const tags = ref<string[]>([])
 
-const tagsJson = computed(() => JSON.stringify(tags.value));
+const tagsJson = computed(() => JSON.stringify(tags.value))
 
 const onTagsChanged = (newTags: string[]) => {
-  tags.value = newTags;
-};
+  tags.value = newTags
+}
 
 /**
  * 商品項目_取得
  */
 interface ProductItems {
-  work_data: Array<{ work_id: number; work_name: string }>;
-  character_data: Array<{ character_id: number; character_name: string; work_id: number }>;
-  storage_space_data: Array<{ storage_space_id: number; storage_space_name: string }>;
-  category_data: Array<{ category_id: number; category_name: string }>;
-  platform_data: Array<{ exhibitor_platform_id: number; exhibitor_platform_name: string }>;
-  currency_data: Array<{ money_currency_id: number; currency_code: string }>;
+  work_data: Array<{ work_id: number; work_name: string }>
+  character_data: Array<{ character_id: number; character_name: string; work_id: number }>
+  storage_space_data: Array<{ storage_space_id: number; storage_space_name: string }>
+  category_data: Array<{ category_id: number; category_name: string }>
+  platform_data: Array<{ exhibitor_platform_id: number; exhibitor_platform_name: string }>
+  currency_data: Array<{ money_currency_id: number; currency_code: string }>
 }
 
-const productItemsArray = ref<ProductItems | null>(null);
+const productItemsArray = ref<ProductItems | null>(null)
 
-async function getProductItems():Promise<void> {
+async function getProductItems(): Promise<void> {
   try {
-    const response = await axios.get('http://localhost:5000/api/product-items');
-    productItemsArray.value = response.data;
-    console.log("productItemsArray.value", productItemsArray.value);
+    const response = await axios.get('http://localhost:5000/api/product-items')
+    productItemsArray.value = response.data
+    console.log('productItemsArray.value', productItemsArray.value)
   } catch (error) {
-    console.error('商品項目の取得に失敗しました:', error);
-    throw error;
+    console.error('商品項目の取得に失敗しました:', error)
+    throw error
   }
 }
 
 /**
  * confirm delete modal
  */
-const confirmDeleteModalRef = ref<InstanceType<typeof ConfirmDeleteModal> | null>(null);
+const confirmDeleteModalRef = ref<InstanceType<typeof ConfirmDeleteModal> | null>(null)
 
-function openConfirmDeleteModal():void {
+function openConfirmDeleteModal(): void {
   if (confirmDeleteModalRef.value) {
-    confirmDeleteModalRef.value.showModal();
+    confirmDeleteModalRef.value.showModal()
   }
 }
 
 async function deleteProduct(): Promise<void> {
   try {
-    const response = await axios.post(`http://localhost:5000/api/product/${productId.value}/delete`);
-    console.log('削除成功:', response.data);
-    alert('削除しました');
+    const response = await axios.post(`http://localhost:5000/api/product/${productId.value}/delete`)
+    console.log('削除成功:', response.data)
+    alert('削除しました')
 
     if (confirmDeleteModalRef.value) {
-      confirmDeleteModalRef.value.hideModal();
+      confirmDeleteModalRef.value.hideModal()
     }
 
-    backExhibitList();
+    backExhibitList()
   } catch (error) {
-    console.error('削除に失敗しました:', error);
-    alert('削除に失敗しました');
+    console.error('削除に失敗しました:', error)
+    alert('削除に失敗しました')
   }
 }
 
 /**
  * exhibit modal
  */
-const exhibitModalRef = ref<InstanceType<typeof ExhibitModal> | null>(null);
+const exhibitModalRef = ref<InstanceType<typeof ExhibitModal> | null>(null)
 
-function openExhibitModal():void {
+function openExhibitModal(): void {
   if (exhibitModalRef.value) {
-    exhibitModalRef.value.showModal();
+    exhibitModalRef.value.showModal()
   }
 }
 
-const exhibits = ref<{ 
-  exhibitName: string; 
-  minPrice: number; 
-  currentPrice: number; 
-  exhibitQuantity: number; 
-  platform: number;
-  tags: string[];
-}[]>([]);
+const exhibits = ref<
+  {
+    exhibitName: string
+    minPrice: number
+    currentPrice: number
+    exhibitQuantity: number
+    platform: number
+    tags: string[]
+  }[]
+>([])
 
-function addExhibit(exhibitData: { exhibitName: any; minPrice: any; currentPrice: any; exhibitQuantity: any; platform: any; tags: any; }) {
-  console.log(exhibitData);
+function addExhibit(exhibitData: {
+  exhibitName: any
+  minPrice: any
+  currentPrice: any
+  exhibitQuantity: any
+  platform: any
+  tags: any
+}) {
+  console.log(exhibitData)
   exhibits.value.push({
     exhibitName: exhibitData.exhibitName,
     minPrice: exhibitData.minPrice,
@@ -206,42 +214,42 @@ function addExhibit(exhibitData: { exhibitName: any; minPrice: any; currentPrice
     exhibitQuantity: exhibitData.exhibitQuantity,
     platform: exhibitData.platform,
     tags: exhibitData.tags || [],
-  });
+  })
 
-  console.log("exhibits.value", exhibits.value);
+  console.log('exhibits.value', exhibits.value)
 }
 
 function handleShow() {
-  console.log('Upload modal is shown');
+  console.log('Upload modal is shown')
 }
 
 function handleHide() {
-  console.log('Upload modal is hidden');
+  console.log('Upload modal is hidden')
 }
 
 /**
- * 画像をS3にアップロード 
+ * 画像をS3にアップロード
  */
 async function uploadImageToS3(file: File) {
   try {
-    const formData = new FormData();
-    formData.append('photo', file);
-    console.log("imege_response", formData);
+    const formData = new FormData()
+    formData.append('photo', file)
+    console.log('imege_response', formData)
 
     const response = await axios.post('http://localhost:5000/api/upload-images', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-    });
+    })
 
     if (response.data && response.data.s3Url) {
-      return response.data.s3Url;
+      return response.data.s3Url
     } else {
-      throw new Error('S3 URLが返されませんでした');
+      throw new Error('S3 URLが返されませんでした')
     }
   } catch (error) {
-    console.error('画像のアップロードに失敗しました:', error);
-    throw error;
+    console.error('画像のアップロードに失敗しました:', error)
+    throw error
   }
 }
 
@@ -268,27 +276,25 @@ async function uploadImageToS3(file: File) {
 //   }
 // }
 
-async function setProducts():Promise<void> {
+async function setProducts(): Promise<void> {
   try {
     // まず、全ての画像をS3にアップロード
-    const uploadedImageUrls = [];
+    const uploadedImageUrls = []
     for (const photo of photos.value) {
-      const s3Url = await uploadImageToS3(photo);  // S3にアップロード
-      uploadedImageUrls.push(s3Url);  // アップロードされたURLを格納
+      const s3Url = await uploadImageToS3(photo) // S3にアップロード
+      uploadedImageUrls.push(s3Url) // アップロードされたURLを格納
     }
 
     // S3アップロードが完了したら、productSubmitを呼び出す
-    await productSubmit(uploadedImageUrls);
+    await productSubmit(uploadedImageUrls)
 
-    alert('商品の登録が完了しました！');
-    backExhibitList();
-
+    alert('商品の登録が完了しました！')
+    backExhibitList()
   } catch (error) {
-    console.error('商品の登録に失敗しました:', error);
-    alert('商品の登録に失敗しました。');
+    console.error('商品の登録に失敗しました:', error)
+    alert('商品の登録に失敗しました。')
   }
 }
-
 
 // TODO
 /**
@@ -306,14 +312,14 @@ async function setProducts():Promise<void> {
 // const storageSpaceId = ref('');
 // // const productTags = ref('');
 // const photos = ref<File[]>([]);
- 
+
 async function productSubmit(_uploadedImageUrls: any[]) {
   try {
     // 全ての画像をS3にアップロード
-    const uploadedImageUrls = [];
+    const uploadedImageUrls = []
     for (const photo of photos.value) {
-      const s3Url = await uploadImageToS3(photo);
-      uploadedImageUrls.push(s3Url);
+      const s3Url = await uploadImageToS3(photo)
+      uploadedImageUrls.push(s3Url)
     }
 
     // JSON形式でリクエストデータを構築
@@ -330,7 +336,7 @@ async function productSubmit(_uploadedImageUrls: any[]) {
       storage_space_id: storageSpaceId.value,
       product_tags: tags.value, // 配列に変換
       photo_urls: uploadedImageUrls, // S3から取得したURLを配列に追加
-      exhibit_info: exhibits.value.map(exhibit => ({
+      exhibit_info: exhibits.value.map((exhibit) => ({
         exhibitor_platform_id: exhibit.platform,
         product_tags: exhibit.tags ? exhibit.tags.join(',') : '',
         exhibit_display_name: exhibit.exhibitName,
@@ -338,24 +344,24 @@ async function productSubmit(_uploadedImageUrls: any[]) {
         current_exhibit_price: exhibit.currentPrice.toString(),
         exhibit_quantity_in_stock: exhibit.exhibitQuantity.toString(),
       })),
-    };
+    }
 
     // JSON形式でリクエストを送信
     const response = await axios.post('http://localhost:5000/api/products', requestData, {
       headers: {
         'Content-Type': 'application/json',
       },
-    });
+    })
 
-    console.log('API response:', response);
-    alert('商品の登録が完了しました！');
+    console.log('API response:', response)
+    alert('商品の登録が完了しました！')
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error('Error response:', error.response?.data);
-      alert(`商品の登録に失敗しました。エラー: ${error.response?.data?.message || '詳細不明'}`);
+      console.error('Error response:', error.response?.data)
+      alert(`商品の登録に失敗しました。エラー: ${error.response?.data?.message || '詳細不明'}`)
     } else {
-      console.error('Error submitting form:', error);
-      alert('商品の登録に失敗しました。');
+      console.error('Error submitting form:', error)
+      alert('商品の登録に失敗しました。')
     }
   }
 }
@@ -398,11 +404,21 @@ async function productSubmit(_uploadedImageUrls: any[]) {
 
 <template>
   <div class="detail-ctn">
-    <div style="display: flex;">
-      <img src="../assets/icons/undo.svg" alt="undo" class="material-symbols-outlined back-btn" @click="detailExhibit()"/>
+    <div style="display: flex">
+      <img
+        src="../assets/icons/undo.svg"
+        alt="undo"
+        class="material-symbols-outlined back-btn"
+        @click="detailExhibit()"
+      />
       <button type="button" class="btn btn-pink edit-btn" @click="backExhibitList()">
         <div class="edit">Lists</div>
-        <img src="../assets/icons/arrow_outward.svg" alt="arrow_outward" class="material-symbols-outlined" style="font-size: 22px !important"/>
+        <img
+          src="../assets/icons/arrow_outward.svg"
+          alt="arrow_outward"
+          class="material-symbols-outlined"
+          style="font-size: 22px !important"
+        />
       </button>
     </div>
     <div class="card component-card">
@@ -412,7 +428,11 @@ async function productSubmit(_uploadedImageUrls: any[]) {
           <div class="image-collage">
             <div class="image-container" @click="openUploadModal">
               <div class="upload-placeholder">
-                <img src="../assets/icons/add_circle.svg" alt="add_circle" class="material-symbols-outlined"/>
+                <img
+                  src="../assets/icons/add_circle.svg"
+                  alt="add_circle"
+                  class="material-symbols-outlined"
+                />
                 <p>Upload Image</p>
               </div>
             </div>
@@ -420,128 +440,211 @@ async function productSubmit(_uploadedImageUrls: any[]) {
               <!-- <div class="image-container" v-for="(image, index) in uploadedImages" :key="index">
                 <img :src="image" alt="uploaded image" class="up-img"/>
               </div> -->
-              <div class="image-container" v-for="(photo, index) in uploadPhotos" :key="index">
-                <img :src="photo.image_path" alt="uploaded image" class="up-img"/>
+              <div v-for="(photo, index) in uploadPhotos" :key="index" class="image-container">
+                <img :src="photo.image_path" alt="uploaded image" class="up-img" />
               </div>
             </div>
             <div class="image-container">
               <div class="upload-placeholder">
-                <img src="../assets/icons/emoji_nature.svg" alt="emoji_nature" class="material-symbols-outlined"/>
+                <img
+                  src="../assets/icons/emoji_nature.svg"
+                  alt="emoji_nature"
+                  class="material-symbols-outlined"
+                />
               </div>
             </div>
             <div class="image-container">
               <div class="upload-placeholder">
-                <img src="../assets/icons/emoji_nature.svg" alt="emoji_nature" class="material-symbols-outlined"/>
+                <img
+                  src="../assets/icons/emoji_nature.svg"
+                  alt="emoji_nature"
+                  class="material-symbols-outlined"
+                />
               </div>
             </div>
             <div class="image-container">
               <div class="upload-placeholder">
-                <img src="../assets/icons/emoji_nature.svg" alt="emoji_nature" class="material-symbols-outlined"/>
+                <img
+                  src="../assets/icons/emoji_nature.svg"
+                  alt="emoji_nature"
+                  class="material-symbols-outlined"
+                />
               </div>
             </div>
             <div class="image-container">
               <div class="upload-placeholder">
-                <img src="../assets/icons/emoji_nature.svg" alt="emoji_nature" class="material-symbols-outlined"/>
+                <img
+                  src="../assets/icons/emoji_nature.svg"
+                  alt="emoji_nature"
+                  class="material-symbols-outlined"
+                />
               </div>
             </div>
           </div>
           <div class="mb-3">
             <label for="inputItemName" class="form-label">Product Name</label>
-            <input v-model="productName" type="text" class="form-control" id="inputItemName" aria-describedby="emailHelp">
+            <input
+              id="inputItemName"
+              v-model="productName"
+              type="text"
+              class="form-control"
+              aria-describedby="emailHelp"
+            />
           </div>
           <div class="mb-3">
             <label for="inputProductCode" class="form-label">Product Code</label>
-            <input v-model="productCode" type="text" class="form-control" id="inputProductCode">
+            <input id="inputProductCode" v-model="productCode" type="text" class="form-control" />
           </div>
           <div class="mb-3">
-            <label for="inputQuantityStock" class="form-label wid-175
-            ">List Price</label>
-            <input v-model="price" type="number" class="form-control form-30" id="inputQuantityStock" min="0" step="10">
+            <label for="inputQuantityStock" class="form-label wid-175">List Price</label>
+            <input
+              id="inputQuantityStock"
+              v-model="price"
+              type="number"
+              class="form-control form-30"
+              min="0"
+              step="10"
+            />
           </div>
           <div class="mb-3">
             <label for="inputItemDesciption" class="form-label">Description</label>
-            <textarea v-model="description" class="form-control" id="inputItemDesciption" rows="3"></textarea>
+            <textarea
+              id="inputItemDesciption"
+              v-model="description"
+              class="form-control"
+              rows="3"
+            ></textarea>
           </div>
           <div class="mb-3">
-            <label for="inputQuantityStock" class="form-label wid-175
-            ">Quantity in stock</label>
-            <input v-model="quantityInStock" type="number" class="form-control form-30" id="inputQuantityStock" min="0" step="1">
+            <label for="inputQuantityStock" class="form-label wid-175">Quantity in stock</label>
+            <input
+              id="inputQuantityStock"
+              v-model="quantityInStock"
+              type="number"
+              class="form-control form-30"
+              min="0"
+              step="1"
+            />
           </div>
           <div class="mb-3">
             <label for="inputItemTag" class="form-label">Product Tag</label>
             <!-- <input v-model="productTags" type="text" class="form-control" id="inputItemTag"> -->
-            <input type="hidden" name="tags" class="form-control" id="inputItemTag" :value="tagsJson"/>
+            <input
+              id="inputItemTag"
+              type="hidden"
+              name="tags"
+              class="form-control"
+              :value="tagsJson"
+            />
             <vue3-tags-input
               v-model:tags="tags"
               placeholder="タグを入力して下さい"
-              @on-tags-changed="onTagsChanged"
               class="custom-tags-input form-control"
+              @on-tags-changed="onTagsChanged"
             />
           </div>
           <div class="mb-3">
             <label for="inputItemName" class="form-label">Product URL</label>
-            <input v-model="productUrl" type="text" class="form-control" id="inputItemName" aria-describedby="emailHelp">
+            <input
+              id="inputItemName"
+              v-model="productUrl"
+              type="text"
+              class="form-control"
+              aria-describedby="emailHelp"
+            />
           </div>
           <div class="mb-3">
-            <label for="inputQuantityStock" class="form-label wid-175
-            ">Work</label>
-            <select v-model="workId" class="form-control form-30" id="workSelect">
-              <option v-for="work in productItemsArray?.work_data || []" :value="work.work_id" :key="work.work_id">
+            <label for="inputQuantityStock" class="form-label wid-175">Work</label>
+            <select id="workSelect" v-model="workId" class="form-control form-30">
+              <option
+                v-for="work in productItemsArray?.work_data || []"
+                :key="work.work_id"
+                :value="work.work_id"
+              >
                 {{ work.work_name }}
               </option>
             </select>
           </div>
           <div class="mb-3">
-            <label for="workSelect" class="form-label wid-175
-            ">Character</label>
-            <select v-model="characterId" class="form-control form-30" id="characterSelect">
-              <option v-for="character in productItemsArray?.character_data || []" :value="character.character_id" :key="character.character_id">
+            <label for="workSelect" class="form-label wid-175">Character</label>
+            <select id="characterSelect" v-model="characterId" class="form-control form-30">
+              <option
+                v-for="character in productItemsArray?.character_data || []"
+                :key="character.character_id"
+                :value="character.character_id"
+              >
                 {{ character.character_name }}
               </option>
             </select>
           </div>
           <div class="mb-3">
-            <label for="inputQuantityStock" class="form-label wid-175
-            ">Category</label>
-            <select v-model="categoryId" class="form-control form-30" id="categorySelect">
-              <option v-for="category in productItemsArray?.category_data || []" :value="category.category_id" :key="category.category_id">
+            <label for="inputQuantityStock" class="form-label wid-175">Category</label>
+            <select id="categorySelect" v-model="categoryId" class="form-control form-30">
+              <option
+                v-for="category in productItemsArray?.category_data || []"
+                :key="category.category_id"
+                :value="category.category_id"
+              >
                 {{ category.category_name }}
               </option>
             </select>
           </div>
           <div class="mb-3">
-            <label for="inputQuantityStock" class="form-label wid-175
-            ">Storage Space</label>
-            <select v-model="storageSpaceId" class="form-control form-30" id="storageSpaceSelect">
-              <option v-for="storage_space in productItemsArray?.storage_space_data || []" :value="storage_space.storage_space_id" :key="storage_space.storage_space_id">
+            <label for="inputQuantityStock" class="form-label wid-175">Storage Space</label>
+            <select id="storageSpaceSelect" v-model="storageSpaceId" class="form-control form-30">
+              <option
+                v-for="storage_space in productItemsArray?.storage_space_data || []"
+                :key="storage_space.storage_space_id"
+                :value="storage_space.storage_space_id"
+              >
                 {{ storage_space.storage_space_name }}
               </option>
             </select>
           </div>
           <div class="exhibit-card-container">
             <div v-for="(exhibit, index) in exhibits" :key="index" class="mb-3">
-              <ExhibitCard 
-                :title="exhibit.exhibitName" 
-                :minPrice="exhibit.minPrice" 
-                :currentPrice="exhibit.currentPrice" 
-                :exhibitQuantity="exhibit.exhibitQuantity"
+              <ExhibitCard
+                :title="exhibit.exhibitName"
+                :min-price="exhibit.minPrice"
+                :current-price="exhibit.currentPrice"
+                :exhibit-quantity="exhibit.exhibitQuantity"
                 :platform="exhibit.platform"
               />
             </div>
           </div>
           <div class="btn-set">
-            <button type="submit" class="btn btn-primary exhibit-btn" style="margin-right:5%; width: auto;" @click.prevent="openExhibitModal()">Add Exhibit Detail</button>
-            <button type="submit" class="btn btn-primary submit-btn" style="margin-right:5%; width: auto;"@click.prevent="setProducts">Update</button>
-            <button type="submit" class="btn btn-primary delete-btn" @click.prevent="openConfirmDeleteModal()">Delete</button>
+            <button
+              type="submit"
+              class="btn btn-primary exhibit-btn"
+              style="margin-right: 5%; width: auto"
+              @click.prevent="openExhibitModal()"
+            >
+              Add Exhibit Detail
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary submit-btn"
+              style="margin-right: 5%; width: auto"
+              @click.prevent="setProducts"
+            >
+              Update
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary delete-btn"
+              @click.prevent="openConfirmDeleteModal()"
+            >
+              Delete
+            </button>
           </div>
         </form>
       </div>
       <!-- <div> -->
-        <!-- 商品削除ボタン -->
-        <!-- <button class="btn btn-danger" @click="confirmDelete(productId)">削除</button> -->
+      <!-- 商品削除ボタン -->
+      <!-- <button class="btn btn-danger" @click="confirmDelete(productId)">削除</button> -->
 
-        <!-- 削除確認モーダル -->
-        <!-- <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+      <!-- 削除確認モーダル -->
+      <!-- <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
@@ -560,9 +663,24 @@ async function productSubmit(_uploadedImageUrls: any[]) {
         </div> -->
       <!-- </div> -->
     </div>
-    <UploadModal ref="uploadModalRef" @show="handleShow" @hide="handleHide" @filesUploaded="handleFilesUploaded" />
-    <ExhibitModal ref="exhibitModalRef" @show="handleShow" @hide="handleHide" @addExhibit="addExhibit" />
-    <ConfirmDeleteModal ref="confirmDeleteModalRef" @show="handleShow" @hide="handleHide" @submitDeletion="deleteProduct" />
+    <UploadModal
+      ref="uploadModalRef"
+      @show="handleShow"
+      @hide="handleHide"
+      @files-uploaded="handleFilesUploaded"
+    />
+    <ExhibitModal
+      ref="exhibitModalRef"
+      @show="handleShow"
+      @hide="handleHide"
+      @add-exhibit="addExhibit"
+    />
+    <ConfirmDeleteModal
+      ref="confirmDeleteModalRef"
+      @show="handleShow"
+      @hide="handleHide"
+      @submit-deletion="deleteProduct"
+    />
   </div>
 </template>
 
@@ -619,7 +737,8 @@ async function productSubmit(_uploadedImageUrls: any[]) {
 }
 /*  */
 
-.header, .detail-ctn {
+.header,
+.detail-ctn {
   margin: 40px 40px 20px;
 }
 
@@ -628,12 +747,12 @@ async function productSubmit(_uploadedImageUrls: any[]) {
   margin-top: 0 !important;
   margin-right: 10px;
   margin-left: 0 !important;
-  color: #D588A0;
+  color: #d588a0;
   cursor: pointer;
 }
 
 .btn-set {
-  margin:2%;
+  margin: 2%;
 }
 
 .edit-btn {
@@ -647,7 +766,9 @@ async function productSubmit(_uploadedImageUrls: any[]) {
   padding-top: 2px;
 }
 
-.edit-btn:focus, .edit-btn:active, .edit-btn:hover {
+.edit-btn:focus,
+.edit-btn:active,
+.edit-btn:hover {
   background-color: #e59bb3 !important;
 }
 
@@ -677,7 +798,7 @@ async function productSubmit(_uploadedImageUrls: any[]) {
 }
 
 .product-price {
-  color: #7D798D;
+  color: #7d798d;
   font-weight: bold;
   text-align: right;
 }
@@ -695,9 +816,9 @@ async function productSubmit(_uploadedImageUrls: any[]) {
 }
 
 .btn-pink {
-  background-color: #ECB1C4;
-  border: #ECB1C4;
-  color: #FAFCFD;
+  background-color: #ecb1c4;
+  border: #ecb1c4;
+  color: #fafcfd;
   width: 110px;
   height: 32px;
   border-radius: 10px;
@@ -706,10 +827,12 @@ async function productSubmit(_uploadedImageUrls: any[]) {
   display: flex;
 }
 
-.btn-pink:hover, .btn-pink:active, .btn-pink:focus {
-  background-color: #EDA3B8;
-  border: #EDA3B8;
-  color: #FAFCFD;
+.btn-pink:hover,
+.btn-pink:active,
+.btn-pink:focus {
+  background-color: #eda3b8;
+  border: #eda3b8;
+  color: #fafcfd;
 }
 
 .exhibit-btn {
@@ -717,10 +840,12 @@ async function productSubmit(_uploadedImageUrls: any[]) {
   background-color: #fbb3ca !important;
   height: 45px;
   border: #fbb3ca;
-  color: #FAFCFD !important;
+  color: #fafcfd !important;
 }
 
-.exhibit-btn:hover, .exhibit-btn:active, .exhibit-btn:focus {
+.exhibit-btn:hover,
+.exhibit-btn:active,
+.exhibit-btn:focus {
   background-color: #ff93b6 !important;
   border: #ff93b6;
 }
@@ -730,10 +855,12 @@ async function productSubmit(_uploadedImageUrls: any[]) {
   background-color: #ff93b6 !important;
   height: 45px;
   border: #ff93b6;
-  color: #FAFCFD !important;
+  color: #fafcfd !important;
 }
 
-.submit-btn:hover, .submit-btn:active, .submit-btn:focus {
+.submit-btn:hover,
+.submit-btn:active,
+.submit-btn:focus {
   background-color: #e97a9e !important;
   border: #e97a9e;
 }
@@ -743,10 +870,12 @@ async function productSubmit(_uploadedImageUrls: any[]) {
   box-shadow: 0 2px 10px #8f93b1;
   height: 45px;
   border: #adc4ef;
-  color: #FAFCFD !important;
+  color: #fafcfd !important;
 }
 
-.delete-btn:hover, .delete-btn:active, .delete-btn:focus {
+.delete-btn:hover,
+.delete-btn:active,
+.delete-btn:focus {
   background-color: #96aedb !important;
   border: #96aedb;
 }
@@ -757,7 +886,10 @@ async function productSubmit(_uploadedImageUrls: any[]) {
   font-size: 19px;
 }
 
-.disabled-btn, .disabled-btn:hover, .disabled-btn:active, .disabled-btn:focus {
+.disabled-btn,
+.disabled-btn:hover,
+.disabled-btn:active,
+.disabled-btn:focus {
   background-color: #e1d1d6;
   height: 40px;
   border: #e1d1d6;
@@ -779,7 +911,7 @@ async function productSubmit(_uploadedImageUrls: any[]) {
 
 .imgmode {
   font-size: 80px;
-  color: #ccc; 
+  color: #ccc;
   margin: 0 !important;
 }
 
@@ -787,15 +919,15 @@ async function productSubmit(_uploadedImageUrls: any[]) {
   width: 1523px;
   height: 100%;
   margin-top: 30px;
-  box-shadow: 0 4px 12px #A0A3B4;
+  box-shadow: 0 4px 12px #a0a3b4;
   position: relative;
 }
 
 .card-text {
-  background-color: #FAF3F6;
+  background-color: #faf3f6;
   border-radius: 10px 10px 0 0;
-  border-bottom: #B2B8C6;
-  color:	#bf8f9f;
+  border-bottom: #b2b8c6;
+  color: #bf8f9f;
   font-weight: bold;
   font-size: 25px;
   text-align: left;
@@ -804,19 +936,21 @@ async function productSubmit(_uploadedImageUrls: any[]) {
 
 .component-card {
   border-radius: 10px;
-  color: #D06179;
-  border: #B2B8C6;
+  color: #d06179;
+  border: #b2b8c6;
 }
 
 .bi-heart.active {
-  color: #E83E8C;
+  color: #e83e8c;
 }
 
 .btn-detail {
   color: #f78aa9;
 }
 
-.btn-detail:hover, .btn-detail:active, .btn-detail:focus {
+.btn-detail:hover,
+.btn-detail:active,
+.btn-detail:focus {
   color: #f777a0;
 }
 
@@ -943,9 +1077,8 @@ async function productSubmit(_uploadedImageUrls: any[]) {
 
 .v3ti--focus {
   box-shadow: none;
-  border-color: #86B7FE;
+  border-color: #86b7fe;
 }
-
 </style>
 
 <style>
