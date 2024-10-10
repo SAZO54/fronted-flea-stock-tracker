@@ -162,8 +162,23 @@ async function addExhibit(): Promise<void> {
   hideModal()
 }
 
+interface ExhibitData {
+  exhibitName?: string
+  exhibit_display_name?: string
+  minPrice?: number
+  min_price?: number
+  currentPrice?: number
+  current_exhibit_price?: number
+  exhibitQuantity?: number
+  exhibit_quantity_in_stock?: number
+  platform?: number | null
+  exhibitor_platform_id?: number | null
+  currency?: number | null
+  money_currency_id?: number | null
+}
+
 // 新たに追加: モーダルにデータを設定するためのメソッド
-function setData(data: any) {
+function setData(data: ExhibitData) {
   exhibitName.value = data?.exhibitName || data?.exhibit_display_name || ''
   minPrice.value = data?.minPrice || data?.min_price || 0
   currentPrice.value = data?.currentPrice || data?.current_exhibit_price || 0

@@ -1,17 +1,14 @@
 <script setup lang="ts">
-// import { ref } from 'vue';
-import { defineProps } from 'vue'
+interface Props {
+  title?: string
+  cardTransition?: string
+}
 
-const props = defineProps({
-  title: String,
-  cardTransition: String,
-})
-
-// const isFavorited = ref(false);
-
-// function toggleFavorite() {
-//   isFavorited.value = !isFavorited.value;
-// }
+// propsを変数に代入せずに直接定義
+const props = withDefaults(defineProps<Props>(), {
+  title: '',
+  cardTransition: 'fade',
+});
 </script>
 
 <template>

@@ -5,19 +5,55 @@ import UploadModal from './Base/UploadModal.vue'
 import { ref, computed, onBeforeMount } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
+interface ExhibitInfo {
+  current_exhibit_price: number;
+  exhibit_display_name: string;
+  exhibit_quantity_in_stock: number;
+  exhibitor_platform_id: number | undefined;
+  min_price: number;
+  money_currency_id: number | undefined;
+}
+
+interface Photo {
+  image_path: string;
+}
+
+interface Tag {
+  tag_name: string;
+}
+
+interface ProductDetail {
+  category_id: number;
+  character_id: number;
+  created_at: string;
+  description: string;
+  exhibit_infos: ExhibitInfo[];
+  photos: Photo[];
+  price: number;
+  product_code: string;
+  product_id: number
+  product_name: string
+  product_url: string;
+  quantity_in_stock: number;
+  storage_space_id: number;
+  tags: Tag[];
+  updated_at: string;
+  work_id: number;
+}
+
 const productName = ref('')
 const productCode = ref('')
 const price = ref(0)
 const description = ref('')
 const quantityInStock = ref(0)
 const productUrl = ref('')
-const workId = ref('')
-const characterId = ref('')
-const categoryId = ref('')
-const storageSpaceId = ref('')
+const workId = ref<number | null>(null)
+const characterId = ref<number | null>(null)
+const categoryId = ref<number | null>(null)
+const storageSpaceId = ref<number | null>(null)
 const photos = ref<File[]>([])
-const uploadPhotos = ref<File[]>([])
-const exhibitInfo = ref<any>([])
+const uploadPhotos = ref<Photo[]>([])
+const exhibitInfo = ref<ExhibitInfo[]>([])
 const URL = window.URL || window.webkitURL
 
 /**
@@ -35,7 +71,7 @@ import ExhibitCard from './Base/ExhibitCard.vue'
  */
 const router = useRouter()
 const productId = ref<number | null>(null)
-const productDetail = ref<any>(null)
+const productDetail = ref<ProductDetail | null>(null)
 
 function backExhibitList(): void {
   router.push('/stock')
@@ -49,7 +85,7 @@ async function fetchProductDetails() {
   try {
     const response = await axios.get(`http://localhost:5000/api/product-detail/${productId.value}`)
     productDetail.value = response.data.product
-    console.log('response', productDetail.value)
+    console.log('productDetail', productDetail.value)
   } catch (error) {
     console.error('商品詳細の取得に失敗しました:', error)
     throw error
@@ -59,33 +95,8 @@ async function fetchProductDetails() {
 /**
  * upload images modal
  */
-// const uploadModal = ref<HTMLDialogElement | null>(null);
-
-// function openUploadModal():void {
-//   if (uploadModal.value) {
-//     uploadModal.value.showModal();
-//   }
-// }
-
-// function handleShow() {
-//   console.log('Upload modal is shown');
-// }
-
-// function handleHide() {
-//   console.log('Upload modal is hidden');
-// }
-
-/**
- * upload images modal
- */
 const uploadModalRef = ref<InstanceType<typeof UploadModal> | null>(null)
 const uploadedImages = ref<string[]>([])
-
-// function openUploadModal():void {
-//   if (uploadModalRef.value) {
-//     uploadModalRef.value.showModal();
-//   }
-// }
 
 function handleFilesUploaded(files: File[]) {
   uploadedImages.value = files.map((file) => URL.createObjectURL(file))
@@ -100,26 +111,27 @@ onBeforeMount(async () => {
 
   if (productId.value !== null) {
     await fetchProductDetails()
-    uploadPhotos.value = productDetail.value.photos
-    productName.value = productDetail.value.product_name
-    productCode.value = productDetail.value.product_code
-    price.value = productDetail.value.price
-    description.value = productDetail.value.description
-    quantityInStock.value = productDetail.value.quantity_in_stock
-    tags.value = productDetail.value.tags
-    productUrl.value = productDetail.value.product_url
-    workId.value = productDetail.value.work_id
-    characterId.value = productDetail.value.character_id
-    categoryId.value = productDetail.value.category_id
-    storageSpaceId.value = productDetail.value.storage_space_id
-    exhibitInfo.value = productDetail.value.exhibit_infos
-    console.log('exhibitInfo', exhibitInfo.value)
+
+    if (productDetail.value !== null) {
+      uploadPhotos.value = productDetail.value.photos
+      productName.value = productDetail.value.product_name
+      productCode.value = productDetail.value.product_code
+      price.value = productDetail.value.price
+      description.value = productDetail.value.description
+      quantityInStock.value = productDetail.value.quantity_in_stock
+      tags.value = productDetail.value.tags.map(tag => tag.tag_name)
+      productUrl.value = productDetail.value.product_url
+      workId.value = productDetail.value.work_id
+      characterId.value = productDetail.value.character_id
+      categoryId.value = productDetail.value.category_id
+      storageSpaceId.value = productDetail.value.storage_space_id
+      exhibitInfo.value = productDetail.value.exhibit_infos
+      console.log('exhibitInfo', exhibitInfo.value)
+    }
   }
 
   await getProductItems()
 })
-
-// const formattedPrice = computed(() => formatNumberWithCommas(price.value));
 
 /**
  * tag
@@ -165,16 +177,16 @@ const editingIndex = ref<number | null>(null)
 
 const isModalDisabled = ref(false)
 
-const exhibits = ref<
-  {
-    exhibitName: string
-    minPrice: number
-    currentPrice: number
-    exhibitQuantity: number
-    platform: number
-    currency: number
-  }[]
->([])
+// const exhibits = ref<
+//   {
+//     exhibitName: string
+//     minPrice: number
+//     currentPrice: number
+//     exhibitQuantity: number
+//     platform: number
+//     currency: number
+//   }[]
+// >([])
 
 function openDisabledExhibitModal(index: number) {
   editingIndex.value = index
@@ -209,159 +221,6 @@ function handleShow() {
 function handleHide() {
   console.log('Upload modal is hidden')
 }
-
-/**
- * 画像をS3にアップロード
- */
-// async function uploadImageToS3(file: File) {
-//   try {
-//     const formData = new FormData();
-//     formData.append('photo', file);
-//     console.log("imege_response", formData);
-
-//     const response = await axios.post('http://localhost:5000/api/upload-images', formData, {
-//       headers: {
-//         'Content-Type': 'multipart/form-data',
-//       },
-//     });
-
-//     if (response.data && response.data.s3Url) {
-//       return response.data.s3Url;
-//     } else {
-//       throw new Error('S3 URLが返されませんでした');
-//     }
-//   } catch (error) {
-//     console.error('画像のアップロードに失敗しました:', error);
-//     throw error;
-//   }
-// }
-
-// async function testUploadImageToS3() {
-//   try {
-//     // photosにファイルが含まれているか確認
-//     if (photos.value.length === 0) {
-//       alert('アップロードする画像を選択してください。');
-//       return;
-//     }
-
-//     // 1枚目の画像をS3にアップロード
-//     const s3Url = await uploadImageToS3(photos.value[0]);
-
-//     if (s3Url) {
-//       console.log('画像がS3にアップロードされました:', s3Url);
-//       alert(`画像がアップロードされました: ${s3Url}`);
-//     } else {
-//       alert('画像のアップロードに失敗しました。');
-//     }
-//   } catch (error) {
-//     console.error('画像のアップロード中にエラーが発生しました:', error);
-//     alert('画像のアップロードに失敗しました。');
-//   }
-// }
-
-// async function setProducts():Promise<void> {
-//   try {
-//     // まず、全ての画像をS3にアップロード
-//     const uploadedImageUrls = [];
-//     for (const photo of photos.value) {
-//       const s3Url = await uploadImageToS3(photo);  // S3にアップロード
-//       uploadedImageUrls.push(s3Url);  // アップロードされたURLを格納
-//     }
-
-//     // S3アップロードが完了したら、productSubmitを呼び出す
-//     await productSubmit(uploadedImageUrls);
-
-//     alert('商品の登録が完了しました！');
-//     backExhibitList();
-
-//   } catch (error) {
-//     console.error('商品の登録に失敗しました:', error);
-//     alert('商品の登録に失敗しました。');
-//   }
-// }
-
-// TODO
-
-/**
- *  商品更新APIの定義
- */
-// const productName = ref('');
-// const productCode = ref('');
-// const price = ref(0);
-// const description = ref('');
-// const quantityInStock = ref(0);
-// const productUrl = ref('');
-// const workId = ref('');
-// const characterId = ref('');
-// const categoryId = ref('');
-// const storageSpaceId = ref('');
-// // const productTags = ref('');
-// const photos = ref<File[]>([]);
-
-// async function productSubmit(_uploadedImageUrls: any[]) {
-//   try {
-//     // 全ての画像をS3にアップロード
-//     const uploadedImageUrls = [];
-//     for (const photo of photos.value) {
-//       const s3Url = await uploadImageToS3(photo);
-//       uploadedImageUrls.push(s3Url);
-//     }
-
-//     // JSON形式でリクエストデータを構築
-//     const requestData = {
-//       product_name: productName.value,
-//       product_code: productCode.value,
-//       price: price.value.toString(),
-//       description: description.value,
-//       quantity_in_stock: quantityInStock.value.toString(),
-//       product_url: productUrl.value,
-//       work_id: workId.value,
-//       character_id: characterId.value,
-//       category_id: categoryId.value,
-//       storage_space_id: storageSpaceId.value,
-//       product_tags: tags.value, // 配列に変換
-//       photo_urls: uploadedImageUrls, // S3から取得したURLを配列に追加
-//       exhibit_info: exhibits.value.map(exhibit => ({
-//         exhibitor_platform_id: exhibit.platform,
-//         product_tags: exhibit.tags ? exhibit.tags.join(',') : '',
-//         exhibit_display_name: exhibit.exhibitName,
-//         min_price: exhibit.minPrice.toString(),
-//         current_exhibit_price: exhibit.currentPrice.toString(),
-//         exhibit_quantity_in_stock: exhibit.exhibitQuantity.toString(),
-//       })),
-//     };
-
-//     // JSON形式でリクエストを送信
-//     const response = await axios.post('http://localhost:5000/api/products', requestData, {
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//     });
-
-//     console.log('API response:', response);
-//     alert('商品の登録が完了しました！');
-//   } catch (error) {
-//     if (axios.isAxiosError(error)) {
-//       console.error('Error response:', error.response?.data);
-//       alert(`商品の登録に失敗しました。エラー: ${error.response?.data?.message || '詳細不明'}`);
-//     } else {
-//       console.error('Error submitting form:', error);
-//       alert('商品の登録に失敗しました。');
-//     }
-//   }
-// }
-
-// const imageFile = ref<File | null>(null); // ファイルオブジェクトを保持するためのref
-// const imageUrl = ref<string | null>(null); // 表示する画像のURL
-
-// // ファイルを選択した際の処理
-// function onFileChange(event: Event) {
-//   const target = event.target as HTMLInputElement;
-//   if (target.files && target.files[0]) {
-//     imageFile.value = target.files[0];
-//     imageUrl.value = URL.createObjectURL(imageFile.value); // 画像URLを生成
-//   }
-// }
 </script>
 
 <template>
@@ -471,20 +330,19 @@ function handleHide() {
           </div>
           <div class="mb-3">
             <label for="inputItemTag" class="form-label">Product Tag</label>
-            <!-- <input v-model="productTags" type="text" class="form-control" id="inputItemTag"> -->
             <input
               id="inputItemTag"
               type="hidden"
               name="tags"
               class="form-control"
               :value="tagsJson"
-              disabled
+              :disabled="true"
             />
             <vue3-tags-input
               v-model:tags="tags"
               placeholder="タグを入力して下さい"
               class="custom-tags-input form-control"
-              disabled
+              :disabled="true"
               @on-tags-changed="onTagsChanged"
             />
           </div>
@@ -569,17 +427,6 @@ function handleHide() {
                 @click="openDisabledExhibitModal(index)"
               />
             </div>
-            <!-- <ExhibitCard 
-              v-for="(exhibit, index) in exhibits" 
-              :key="index" 
-              :title="exhibit.exhibitName" 
-              :minPrice="exhibit.minPrice" 
-              :currentPrice="exhibit.currentPrice" 
-              :exhibitQuantity="exhibit.exhibitQuantity"
-              :platform="exhibit.platform"
-              :curency="exhibit.currency"
-              @editExhibit="editExhibitModal(index)"
-            /> -->
           </div>
         </form>
       </div>
@@ -606,7 +453,6 @@ function handleHide() {
   border-radius: 10px;
 }
 
-/* test用 */
 .image-collage {
   display: flex;
   justify-content: center;
@@ -973,6 +819,10 @@ function handleHide() {
   margin-left: 8px;
   cursor: pointer;
   color: white; /* タグの削除ボタンの色: 白色 */
+}
+
+.custom-tags-input[disabled] {
+  background-color: #f7eff38a;
 }
 
 .v3ti--focus {

@@ -96,17 +96,17 @@ const exhibits = ref<
     currentPrice: number
     exhibitQuantity: number
     platform: number
-    currecy: number
+    currency: number
   }[]
 >([])
 
 function addExhibit(exhibitData: {
-  exhibitName: any
-  minPrice: any
-  currentPrice: any
-  exhibitQuantity: any
-  platform: any
-  currency: any
+  exhibitName: string
+  minPrice: number
+  currentPrice: number
+  exhibitQuantity: number
+  platform: number
+  currency: number
 }) {
   console.log(exhibitData)
   exhibits.value.push({
@@ -115,7 +115,7 @@ function addExhibit(exhibitData: {
     currentPrice: exhibitData.currentPrice,
     exhibitQuantity: exhibitData.exhibitQuantity,
     platform: exhibitData.platform,
-    currecy: exhibitData.currency,
+    currency: exhibitData.currency,
   })
 
   console.log('exhibits.value', exhibits.value)
@@ -315,7 +315,7 @@ async function setProducts(): Promise<void> {
     }
 
     // S3アップロードが完了したら、productSubmitを呼び出す
-    await productSubmit(uploadedImageUrls)
+    await productSubmit();
 
     alert('商品の登録が完了しました！')
     backExhibitList()
@@ -340,7 +340,7 @@ const categoryId = ref(null)
 const storageSpaceId = ref(null)
 const photos = ref<File[]>([])
 
-async function productSubmit(_uploadedImageUrls: any[]) {
+async function productSubmit() {
   try {
     // 全ての画像をS3にアップロード
     const uploadedImageUrls = []
@@ -365,7 +365,7 @@ async function productSubmit(_uploadedImageUrls: any[]) {
       photo_urls: uploadedImageUrls, // S3から取得したURLを配列に追加
       exhibit_info: exhibits.value.map((exhibit) => ({
         exhibitor_platform_id: exhibit.platform,
-        money_currency_id: exhibit.currecy,
+        money_currency_id: exhibit.currency,
         exhibit_display_name: exhibit.exhibitName,
         min_price: exhibit.minPrice.toString(),
         current_exhibit_price: exhibit.currentPrice.toString(),
@@ -399,6 +399,8 @@ const filteredCharacters = computed(() => {
       (character) => character.work_id === workId.value
     )
   }
+
+  return []
 })
 
 // watchを使ってcharacterIdをリセット
@@ -657,7 +659,7 @@ watch(workId, () => {
                 :current-price="exhibit.currentPrice"
                 :exhibit-quantity="exhibit.exhibitQuantity"
                 :platform="exhibit.platform"
-                :curency="exhibit.currecy"
+                :curency="exhibit.currency"
               />
             </div>
           </div>

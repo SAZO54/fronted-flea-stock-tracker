@@ -8,19 +8,55 @@ import ExhibitCard from './Base/ExhibitCard.vue'
 import { ref, computed, onBeforeMount } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
+interface ExhibitInfo {
+  current_exhibit_price: number;
+  exhibit_display_name: string;
+  exhibit_quantity_in_stock: number;
+  exhibitor_platform_id: number | undefined;
+  min_price: number;
+  money_currency_id: number | undefined;
+}
+
+interface Photo {
+  image_path: string;
+}
+
+interface Tag {
+  tag_name: string;
+}
+
+interface ProductDetail {
+  category_id: number;
+  character_id: number;
+  created_at: string;
+  description: string;
+  exhibit_infos: ExhibitInfo[];
+  photos: Photo[];
+  price: number;
+  product_code: string;
+  product_id: number
+  product_name: string
+  product_url: string;
+  quantity_in_stock: number;
+  storage_space_id: number;
+  tags: Tag[];
+  updated_at: string;
+  work_id: number;
+}
+
 const productName = ref('')
 const productCode = ref('')
 const price = ref(0)
 const description = ref('')
 const quantityInStock = ref(0)
 const productUrl = ref('')
-const workId = ref('')
-const characterId = ref('')
-const categoryId = ref('')
-const storageSpaceId = ref('')
+const workId = ref<number | null>(null)
+const characterId = ref<number | null>(null)
+const categoryId = ref<number | null>(null)
+const storageSpaceId = ref<number | null>(null)
 // const productTags = ref('');
 const photos = ref<File[]>([])
-const uploadPhotos = ref<File[]>([])
+const uploadPhotos = ref<Photo[]>([])
 const URL = window.URL || window.webkitURL
 
 /**
@@ -28,7 +64,7 @@ const URL = window.URL || window.webkitURL
  */
 const router = useRouter()
 const productId = ref<number | null>(null)
-const productDetail = ref<any>(null)
+const productDetail = ref<ProductDetail | null>(null)
 
 function backExhibitList(): void {
   router.push('/stock')
@@ -93,20 +129,23 @@ onBeforeMount(async () => {
 
   if (productId.value !== null) {
     await fetchProductDetails()
-    uploadPhotos.value = productDetail.value.photos
-    console.log('uploadPhotos', uploadPhotos.value)
-    productName.value = productDetail.value.product_name
-    productCode.value = productDetail.value.product_code
-    price.value = productDetail.value.price
-    description.value = productDetail.value.description
-    quantityInStock.value = productDetail.value.quantity_in_stock
-    tags.value = productDetail.value.tags
-    console.log('tags', tags.value)
-    productUrl.value = productDetail.value.product_url
-    workId.value = productDetail.value.work_id
-    characterId.value = productDetail.value.character_id
-    categoryId.value = productDetail.value.category_id
-    storageSpaceId.value = productDetail.value.storage_space_id
+
+    if (productDetail.value !== null) {
+      uploadPhotos.value = productDetail.value.photos
+      console.log('uploadPhotos', uploadPhotos.value)
+      productName.value = productDetail.value.product_name
+      productCode.value = productDetail.value.product_code
+      price.value = productDetail.value.price
+      description.value = productDetail.value.description
+      quantityInStock.value = productDetail.value.quantity_in_stock
+      tags.value = productDetail.value.tags.map(tag => tag.tag_name)
+      console.log('tags', tags.value)
+      productUrl.value = productDetail.value.product_url
+      workId.value = productDetail.value.work_id
+      characterId.value = productDetail.value.character_id
+      categoryId.value = productDetail.value.category_id
+      storageSpaceId.value = productDetail.value.storage_space_id
+    }
   }
 
   await getProductItems()
@@ -199,12 +238,12 @@ const exhibits = ref<
 >([])
 
 function addExhibit(exhibitData: {
-  exhibitName: any
-  minPrice: any
-  currentPrice: any
-  exhibitQuantity: any
-  platform: any
-  tags: any
+  exhibitName: string
+    minPrice: number
+    currentPrice: number
+    exhibitQuantity: number
+    platform: number
+    tags: string[]
 }) {
   console.log(exhibitData)
   exhibits.value.push({
@@ -286,7 +325,7 @@ async function setProducts(): Promise<void> {
     }
 
     // S3アップロードが完了したら、productSubmitを呼び出す
-    await productSubmit(uploadedImageUrls)
+    await productSubmit()
 
     alert('商品の登録が完了しました！')
     backExhibitList()
@@ -313,7 +352,7 @@ async function setProducts(): Promise<void> {
 // // const productTags = ref('');
 // const photos = ref<File[]>([]);
 
-async function productSubmit(_uploadedImageUrls: any[]) {
+async function productSubmit() {
   try {
     // 全ての画像をS3にアップロード
     const uploadedImageUrls = []

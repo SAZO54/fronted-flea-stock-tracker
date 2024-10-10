@@ -3,8 +3,44 @@ import axios from 'axios'
 import { ref, onBeforeMount, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
-const productInfoArray = ref<any[]>([])
-const productPhotos = ref('')
+interface ExhibitInfo {
+  current_exhibit_price: number;
+  exhibit_display_name: string;
+  exhibit_quantity_in_stock: number;
+  exhibitor_platform_id: number | null;
+  min_price: number;
+  money_currency_id: number | null;
+}
+
+interface Photo {
+  image_path: string;
+}
+
+interface Tag {
+  tag_name: string;
+}
+
+interface ProductInfo {
+  category_id: number;
+  character_id: number | null;
+  created_at: string;
+  description: string;
+  exhibit_infos: ExhibitInfo[];
+  photos: Photo[];
+  price: number;
+  product_code: string;
+  product_id: number;
+  product_name: string;
+  product_url: string;
+  quantity_in_stock: number;
+  storage_space_id: number;
+  tags: Tag[];
+  updated_at: string;
+  work_id: number;
+}
+
+const productInfoArray = ref<ProductInfo[]>([])
+const productPhotos = ref<Photo[]>([])
 const totalItems = ref(0)
 
 watch(productInfoArray, (newValue) => {
@@ -71,7 +107,7 @@ async function getProductInfo(): Promise<void> {
   try {
     const response = await axios.get('http://localhost:5000/api/fetch-products')
     productInfoArray.value = response.data.products
-    console.log('response', productInfoArray.value)
+    console.log('productInfoArray', productInfoArray.value)
     console.log('productPhotos', productPhotos.value)
   } catch (error) {
     console.error('商品の取得に失敗しました:', error)
