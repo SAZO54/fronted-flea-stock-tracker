@@ -1,51 +1,51 @@
 <script setup lang="ts">
-import { ref, onMounted, defineEmits, defineExpose } from 'vue';
-import * as bootstrap from 'bootstrap';
+import { ref, onMounted, defineEmits, defineExpose } from 'vue'
+import * as bootstrap from 'bootstrap'
 
-const files = ref<File[]>([]);
-const uploadModal = ref<HTMLDivElement | null>(null);
-const fileInput = ref<HTMLInputElement | null>(null);
+const files = ref<File[]>([])
+const uploadModal = ref<HTMLDivElement | null>(null)
+const fileInput = ref<HTMLInputElement | null>(null)
 
-const emits = defineEmits(['show', 'hide', 'filesUploaded']);
-let modal: bootstrap.Modal | null = null;
+const emits = defineEmits(['show', 'hide', 'filesUploaded'])
+let modal: bootstrap.Modal | null = null
 
 onMounted(() => {
   if (uploadModal.value) {
     // Bootstrap Modal インスタンスを作成
-    modal = new bootstrap.Modal(uploadModal.value);
+    modal = new bootstrap.Modal(uploadModal.value)
   }
-});
+})
 
 function showModal() {
-  emits('show');
+  emits('show')
   if (modal) {
-    modal.show();
+    modal.show()
   }
 }
 
 function hideModal(): void {
-  emits('hide');
+  emits('hide')
   if (modal) {
-    modal.hide();
+    modal.hide()
   }
 }
 
 defineExpose({
   showModal,
   hideModal,
-});
+})
 
 function browseFiles(): void {
   if (fileInput.value) {
-    fileInput.value.click();
+    fileInput.value.click()
   }
 }
 
 function handleFileUpload(event: Event) {
-  const target = event.target as HTMLInputElement | null;
+  const target = event.target as HTMLInputElement | null
   if (!target || !target.files) {
-    console.error('target or files is undefined');
-    return;
+    console.error('target or files is undefined')
+    return
   }
 
   // const selectedFiles = Array.from(target.files);
@@ -53,7 +53,7 @@ function handleFileUpload(event: Event) {
 
   // emits('filesUploaded', selectedFiles);
 
-  files.value = Array.from(target.files);
+  files.value = Array.from(target.files)
 
   // Simulate file upload process
   // setTimeout(() => {
@@ -70,7 +70,7 @@ function handleFileUpload(event: Event) {
 
 //   // const droppedFiles = Array.from(event.dataTransfer.files);
 //   // files.value = droppedFiles;
-  
+
 //   files.value = Array.from(event.dataTransfer.files);
 
 //   // Simulate file upload process
@@ -80,33 +80,50 @@ function handleFileUpload(event: Event) {
 // }
 
 function submitFiles(): void {
-  emits('filesUploaded', files.value);
-  hideModal();
+  emits('filesUploaded', files.value)
+  hideModal()
 }
 </script>
 
 <template>
   <div>
-    <div class="modal fade" ref="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+    <div
+      ref="uploadModal"
+      class="modal fade"
+      tabindex="-1"
+      aria-labelledby="uploadModalLabel"
+      aria-hidden="true"
+    >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="uploadModalLabel">Upload</h5>
-            <button type="button" class="btn-close" @click="hideModal" aria-label="Close"></button>
+            <h5 id="uploadModalLabel" class="modal-title">Upload</h5>
+            <button type="button" class="btn-close" aria-label="Close" @click="hideModal"></button>
           </div>
           <div class="modal-body">
-            <div class="d-flex justify-content-center align-items-center img-ctn" @click.prevent="browseFiles">
+            <div
+              class="d-flex justify-content-center align-items-center img-ctn"
+              @click.prevent="browseFiles"
+            >
               <div class="text-center">
-                <div style="line-height: 38px;">
-                  <img src="../../assets/icons/imagesmode.svg" alt="imagesmode" class="material-symbols-outlined imgmode"/>
+                <div style="line-height: 38px">
+                  <img
+                    src="../../assets/icons/imagesmode.svg"
+                    alt="imagesmode"
+                    class="material-symbols-outlined imgmode"
+                  />
                 </div>
-                <div style="color: #ccc;">Select Images</div>
+                <div style="color: #ccc">Select Images</div>
               </div>
             </div>
             <div class="upload-area">
-              <input type="file" @change="handleFileUpload" multiple hidden ref="fileInput" />
+              <input ref="fileInput" type="file" multiple hidden @change="handleFileUpload" />
               <ul class="list-group mt-3">
-                <li v-for="(file, index) in files" :key="index" class="list-group-item d-flex justify-content-between align-items-center">
+                <li
+                  v-for="(file, index) in files"
+                  :key="index"
+                  class="list-group-item d-flex justify-content-between align-items-center"
+                >
                   <span>{{ file.name }}</span>
                 </li>
               </ul>
@@ -114,8 +131,12 @@ function submitFiles(): void {
           </div>
           <div class="modal-footer">
             <div>
-            <button type="button" class="btn btn-secondary cancel-btn" @click="hideModal">Cancel</button>
-            <button type="button" class="btn btn-secondary decision-btn" @click="submitFiles">Decision</button>
+              <button type="button" class="btn btn-secondary cancel-btn" @click="hideModal">
+                Cancel
+              </button>
+              <button type="button" class="btn btn-secondary decision-btn" @click="submitFiles">
+                Decision
+              </button>
             </div>
           </div>
         </div>
@@ -142,20 +163,22 @@ function submitFiles(): void {
   border: #89b7e1b5;
 }
 
-.cancel-btn:hover, .cancel-btn:active, .cancel-btn:focus {
+.cancel-btn:hover,
+.cancel-btn:active,
+.cancel-btn:focus {
   background-color: #6690b8b5;
   border: #6690b8b5;
 }
 
 .decision-btn {
-  background-color: #EDA3B8;
-  border: #EDA3B8;
+  background-color: #eda3b8;
+  border: #eda3b8;
 }
 
-.decision-btn:hover, .decision-btn:active, .decision-btn:focus {
+.decision-btn:hover,
+.decision-btn:active,
+.decision-btn:focus {
   background-color: #e5839f;
   border: #e5839f;
 }
-
-
 </style>

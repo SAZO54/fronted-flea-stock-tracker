@@ -39,20 +39,39 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-white">
     <div class="container-fluid">
       <a class="navbar-brand" href="/">
-        <img src="../../assets/wolf.png" alt="Logo" width="40" height="40" class="d-inline-block align-top">
+        <img
+          src="../../assets/wolf.png"
+          alt="Logo"
+          width="40"
+          height="40"
+          class="d-inline-block align-top"
+        />
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNavDropdown"
+        aria-controls="navbarNavDropdown"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
         <span class="navbar-toggler-icon"></span>
       </button>
       <h3 class="ftitle">FleaStock Tracker</h3>
-      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <div id="navbarNavDropdown" class="collapse navbar-collapse">
         <form class="d-flex" role="search">
           <div class="search-box">
-            <img src="../../assets/icons/favorite.svg" alt="favorite" class="search-icon"/>
-            <input class="form-control me-2 search" type="search" placeholder="Search" aria-label="Search">
+            <img src="../../assets/icons/favorite.svg" alt="favorite" class="search-icon" />
+            <input
+              class="form-control me-2 search"
+              type="search"
+              placeholder="Search"
+              aria-label="Search"
+            />
           </div>
           <button class="btn a-botton" type="submit">
-            <img src="../../assets/icons/search.svg" alt="search"/>
+            <img src="../../assets/icons/search.svg" alt="search" />
           </button>
         </form>
       </div>
@@ -62,12 +81,12 @@
 
 <style scoped>
 .f-gray {
-  color: #5F5D6A;
+  color: #5f5d6a;
   font-weight: bold;
 }
 
 .ftitle {
-  color: #D588A0;
+  color: #d588a0;
   margin-left: 15px;
   font-size: 2.5rem;
   font-weight: bold;
@@ -80,8 +99,8 @@
   left: 0;
   width: 100%;
   z-index: 1000; /* SideBarより上に表示されるように z-index を高く設定 */
-  box-shadow: 0 4px 6px #F0E7EC;
-  background: linear-gradient(to right, #fff, #FAF5F9);
+  box-shadow: 0 4px 6px #f0e7ec;
+  background: linear-gradient(to right, #fff, #faf5f9);
   height: 72px;
   margin-bottom: 0;
 }
@@ -94,18 +113,20 @@
   padding-left: 130px;
 }
 
-.f-gray:hover, .f-gray:active, .f-gray:focus {
-  color: #D7A0B0;
+.f-gray:hover,
+.f-gray:active,
+.f-gray:focus {
+  color: #d7a0b0;
 }
 
 .d-flex {
-  margin:0 0 0 auto
+  margin: 0 0 0 auto;
 }
 
 .search {
   padding-left: 35px;
   border-radius: 20px;
-  border: #F6EEF3 solid 2.5px;
+  border: #f6eef3 solid 2.5px;
   width: 310px;
 }
 
@@ -118,7 +139,7 @@
 .search-icon {
   position: absolute;
   left: 10px;
-  color: #F7C4CC; /* アイコンの色を指定 */
+  color: #f7c4cc; /* アイコンの色を指定 */
 }
 
 .search {
@@ -126,34 +147,39 @@
 }
 
 .search-botton {
-  color: #F1BCCE;
+  color: #f1bcce;
   padding: 5px 0 0 0;
 }
 
 .search-botton:hover {
-  color: #DAA1B6;
+  color: #daa1b6;
 }
 
-.search::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: #F7C4CC; /* ピンク色 */
+.search::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #f7c4cc; /* ピンク色 */
   opacity: 1; /* プレースホルダーの透明度をフルに */
 }
 
-.search:-ms-input-placeholder { /* Internet Explorer 10-11 */
-  color: #F7C4CC;
+.search:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: #f7c4cc;
 }
 
-.sarch::-ms-input-placeholder { /* Microsoft Edge */
-  color: #F7C4CC;
+.sarch::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: #f7c4cc;
 }
 
 .btn {
   padding-left: 0;
   margin-top: 5px;
-  color: #E99CB6;
+  color: #e99cb6;
 }
 
-.btn:active, .btn:hover, .btn:focus {
-  color: #C3758E;
+.btn:active,
+.btn:hover,
+.btn:focus {
+  color: #c3758e;
 }
 </style>

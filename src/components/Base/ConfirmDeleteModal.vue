@@ -1,56 +1,66 @@
 <script setup lang="ts">
-import { ref, onMounted, defineEmits, defineExpose } from 'vue';
-import * as bootstrap from 'bootstrap';
+import { ref, onMounted, defineEmits, defineExpose } from 'vue'
+import * as bootstrap from 'bootstrap'
 
-const confirmDeleteModal = ref<HTMLDivElement | null>(null);
+const confirmDeleteModal = ref<HTMLDivElement | null>(null)
 
-const emits = defineEmits(['show', 'hide', 'submitDeletion']);
-let modal: bootstrap.Modal | null = null;
+const emits = defineEmits(['show', 'hide', 'submitDeletion'])
+let modal: bootstrap.Modal | null = null
 
 onMounted(() => {
   if (confirmDeleteModal.value) {
     // Bootstrap Modal インスタンスを作成
-    modal = new bootstrap.Modal(confirmDeleteModal.value);
+    modal = new bootstrap.Modal(confirmDeleteModal.value)
   }
-});
+})
 
 function submitDeletion(): void {
-  emits('submitDeletion'); // イベントを親コンポーネントに発火
-}   
+  emits('submitDeletion') // イベントを親コンポーネントに発火
+}
 
 function showModal() {
-  emits('show');
+  emits('show')
   if (modal) {
-    modal.show(); // モーダルを表示
+    modal.show() // モーダルを表示
   }
 }
 
-function hideModal():void {
-  emits('hide');
+function hideModal(): void {
+  emits('hide')
   if (modal) {
-    modal.hide(); // モーダルを非表示
+    modal.hide() // モーダルを非表示
   }
 }
 
 defineExpose({
   showModal,
   hideModal,
-});
+})
 </script>
 
 <template>
   <div>
-    <div class="modal fade" ref="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModal" aria-hidden="true">
+    <div
+      ref="confirmDeleteModal"
+      class="modal fade"
+      tabindex="-1"
+      aria-labelledby="confirmDeleteModal"
+      aria-hidden="true"
+    >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="confirmDeleteModal">Confirm Delete</h5>
-            <button type="button" class="btn-close" @click="hideModal" aria-label="Close"></button>
+            <h5 id="confirmDeleteModal" class="modal-title">Confirm Delete</h5>
+            <button type="button" class="btn-close" aria-label="Close" @click="hideModal"></button>
           </div>
           <div class="modal-body">Are you sure you want to delete it?</div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary cancel-btn" @click="hideModal">Cancel</button>
-            <button type="button" class="btn btn-secondary add-btn" @click="submitDeletion">Delete</button>
+            <button type="button" class="btn btn-secondary cancel-btn" @click="hideModal">
+              Cancel
+            </button>
+            <button type="button" class="btn btn-secondary add-btn" @click="submitDeletion">
+              Delete
+            </button>
           </div>
         </div>
       </div>
@@ -72,7 +82,9 @@ defineExpose({
   padding: 10px;
 }
 
-.cancel-btn:hover, .cancel-btn:active, .cancel-btn:focus {
+.cancel-btn:hover,
+.cancel-btn:active,
+.cancel-btn:focus {
   background-color: #95a9bcb5;
   border: #95a9bcb5;
 }
@@ -85,7 +97,9 @@ defineExpose({
   padding: 10px;
 }
 
-.add-btn:hover, .cancel-btn:active, .cancel-btn:focus {
+.add-btn:hover,
+.cancel-btn:active,
+.cancel-btn:focus {
   background-color: #df87bab5;
   border: #df87bab5;
 }

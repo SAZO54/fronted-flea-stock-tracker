@@ -24,7 +24,9 @@
   text-align: right;
 }
 
-.dropdown-item:hover, .dropdown-item:focus, .dropdown-item:active {
+.dropdown-item:hover,
+.dropdown-item:focus,
+.dropdown-item:active {
   color: #c0455f;
 }
 
@@ -32,12 +34,12 @@
   width: 220px;
   height: 160px;
   margin: 25px 15px 0 25px;
-  box-shadow: 0 4px 12px #EBE2E7;
+  box-shadow: 0 4px 12px #ebe2e7;
   position: relative;
 }
 
 .card-item-text {
-  color: #7D798D;
+  color: #7d798d;
   position: absolute;
   bottom: 10px;
   left: 50%;
@@ -50,18 +52,17 @@
 .component-card-item {
   background: linear-gradient(to bottom, #ffdcea, #f4d7df4f);
   border-radius: 20px;
-  color: #D06179;
-  border: #FEF9FA;
+  color: #d06179;
+  border: #fef9fa;
 }
 
 .bi-heart.active {
-  color: #E83E8C;
+  color: #e83e8c;
 }
 
 .heart_img {
   padding: 10px;
 }
-
 
 .flea-market-icon {
   width: 25px;

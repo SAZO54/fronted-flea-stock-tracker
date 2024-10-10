@@ -1,47 +1,80 @@
 <script setup lang="ts">
-import axios from 'axios';
-import UploadModal from './Base/UploadModal.vue';
+import axios from 'axios'
+import UploadModal from './Base/UploadModal.vue'
 // import { formatNumberWithCommas } from '../util/utils.ts';
-import { ref, computed, onBeforeMount } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { ref, computed, onBeforeMount } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
-const productName = ref('');
-const productCode = ref('');
-const price = ref(0);
-const description = ref('');
-const quantityInStock = ref(0);
-const productUrl = ref('');
-const workId = ref('');
-const characterId = ref('');
-const categoryId = ref('');
-const storageSpaceId = ref('');
-const photos = ref<File[]>([]);
-const uploadPhotos = ref<File[]>([]);
-const exhibitInfo = ref<any>([]);
-const URL = window.URL || window.webkitURL;
+interface ExhibitInfo {
+  current_exhibit_price: number;
+  exhibit_display_name: string;
+  exhibit_quantity_in_stock: number;
+  exhibitor_platform_id: number | undefined;
+  min_price: number;
+  money_currency_id: number | undefined;
+}
 
+interface Photo {
+  image_path: string;
+}
+
+interface Tag {
+  tag_name: string;
+}
+
+interface ProductDetail {
+  category_id: number;
+  character_id: number;
+  created_at: string;
+  description: string;
+  exhibit_infos: ExhibitInfo[];
+  photos: Photo[];
+  price: number;
+  product_code: string;
+  product_id: number
+  product_name: string
+  product_url: string;
+  quantity_in_stock: number;
+  storage_space_id: number;
+  tags: Tag[];
+  updated_at: string;
+  work_id: number;
+}
+
+const productName = ref('')
+const productCode = ref('')
+const price = ref(0)
+const description = ref('')
+const quantityInStock = ref(0)
+const productUrl = ref('')
+const workId = ref<number | null>(null)
+const characterId = ref<number | null>(null)
+const categoryId = ref<number | null>(null)
+const storageSpaceId = ref<number | null>(null)
+const photos = ref<File[]>([])
+const uploadPhotos = ref<Photo[]>([])
+const exhibitInfo = ref<ExhibitInfo[]>([])
+const URL = window.URL || window.webkitURL
 
 /**
- * 
+ *
  */
-import Vue3TagsInput from 'vue3-tags-input';
-import ExhibitModal from './Base/ExhibitModal.vue';
-import ExhibitCard from './Base/ExhibitCard.vue';
+import Vue3TagsInput from 'vue3-tags-input'
+import ExhibitModal from './Base/ExhibitModal.vue'
+import ExhibitCard from './Base/ExhibitCard.vue'
 /**
- * 
+ *
  */
-
-
 
 /**
  * pageTransition
  */
-const router = useRouter();
-const productId = ref<number | null>(null);
-const productDetail = ref<any>(null);
+const router = useRouter()
+const productId = ref<number | null>(null)
+const productDetail = ref<ProductDetail | null>(null)
 
-function backExhibitList():void {
-  router.push('/stock');
+function backExhibitList(): void {
+  router.push('/stock')
 }
 
 function editExhibit(): void {
@@ -50,145 +83,122 @@ function editExhibit(): void {
 
 async function fetchProductDetails() {
   try {
-    const response = await axios.get(`http://localhost:5000/api/product-detail/${productId.value}`);
-    productDetail.value = response.data.product;
-    console.log("response", productDetail.value);
+    const response = await axios.get(`http://localhost:5000/api/product-detail/${productId.value}`)
+    productDetail.value = response.data.product
+    console.log('productDetail', productDetail.value)
   } catch (error) {
-    console.error('商品詳細の取得に失敗しました:', error);
-    throw error;
+    console.error('商品詳細の取得に失敗しました:', error)
+    throw error
   }
 }
 
 /**
  * upload images modal
  */
-// const uploadModal = ref<HTMLDialogElement | null>(null);
-
-// function openUploadModal():void {
-//   if (uploadModal.value) {
-//     uploadModal.value.showModal();
-//   }
-// }
-
-// function handleShow() {
-//   console.log('Upload modal is shown');
-// }
-
-// function handleHide() {
-//   console.log('Upload modal is hidden');
-// }
-
-/**
- * upload images modal
- */
-const uploadModalRef = ref<InstanceType<typeof UploadModal> | null>(null);
-const uploadedImages = ref<string[]>([]);
-
-// function openUploadModal():void {
-//   if (uploadModalRef.value) {
-//     uploadModalRef.value.showModal();
-//   }
-// }
+const uploadModalRef = ref<InstanceType<typeof UploadModal> | null>(null)
+const uploadedImages = ref<string[]>([])
 
 function handleFilesUploaded(files: File[]) {
-  uploadedImages.value = files.map(file => URL.createObjectURL(file));
+  uploadedImages.value = files.map((file) => URL.createObjectURL(file))
   photos.value = files
 }
 
-
 onBeforeMount(async () => {
-  const route = useRoute();
-  const id = route.query.id;
-  productId.value = id ? parseInt(id as string, 10) : null;
-  console.log("productId.value", productId.value);
-  
+  const route = useRoute()
+  const id = route.query.id
+  productId.value = id ? parseInt(id as string, 10) : null
+  console.log('productId.value', productId.value)
+
   if (productId.value !== null) {
-    await fetchProductDetails();
-    uploadPhotos.value = productDetail.value.photos;
-    productName.value = productDetail.value.product_name;
-    productCode.value = productDetail.value.product_code;
-    price.value = productDetail.value.price;
-    description.value = productDetail.value.description;
-    quantityInStock.value = productDetail.value.quantity_in_stock;
-    tags.value = productDetail.value.tags;
-    productUrl.value = productDetail.value.product_url;
-    workId.value = productDetail.value.work_id;
-    characterId.value = productDetail.value.character_id;
-    categoryId.value = productDetail.value.category_id;
-    storageSpaceId.value = productDetail.value.storage_space_id;
-    exhibitInfo.value = productDetail.value.exhibit_infos;
-    console.log("exhibitInfo", exhibitInfo.value);
+    await fetchProductDetails()
+
+    if (productDetail.value !== null) {
+      uploadPhotos.value = productDetail.value.photos
+      productName.value = productDetail.value.product_name
+      productCode.value = productDetail.value.product_code
+      price.value = productDetail.value.price
+      description.value = productDetail.value.description
+      quantityInStock.value = productDetail.value.quantity_in_stock
+      tags.value = productDetail.value.tags.map(tag => tag.tag_name)
+      productUrl.value = productDetail.value.product_url
+      workId.value = productDetail.value.work_id
+      characterId.value = productDetail.value.character_id
+      categoryId.value = productDetail.value.category_id
+      storageSpaceId.value = productDetail.value.storage_space_id
+      exhibitInfo.value = productDetail.value.exhibit_infos
+      console.log('exhibitInfo', exhibitInfo.value)
+    }
   }
 
-  await getProductItems();
-});
-
-// const formattedPrice = computed(() => formatNumberWithCommas(price.value));
+  await getProductItems()
+})
 
 /**
  * tag
  */
- const tags = ref<string[]>([]);
+const tags = ref<string[]>([])
 
-const tagsJson = computed(() => JSON.stringify(tags.value));
+const tagsJson = computed(() => JSON.stringify(tags.value))
 
 const onTagsChanged = (newTags: string[]) => {
-  tags.value = newTags;
-};
+  tags.value = newTags
+}
 
 /**
  * 商品項目_取得
  */
 interface ProductItems {
-  work_data: Array<{ work_id: number; work_name: string }>;
-  character_data: Array<{ character_id: number; character_name: string; work_id: number }>;
-  storage_space_data: Array<{ storage_space_id: number; storage_space_name: string }>;
-  category_data: Array<{ category_id: number; category_name: string }>;
-  platform_data: Array<{ exhibitor_platform_id: number; exhibitor_platform_name: string }>;
-  currency_data: Array<{ money_currency_id: number; currency_code: string }>;
+  work_data: Array<{ work_id: number; work_name: string }>
+  character_data: Array<{ character_id: number; character_name: string; work_id: number }>
+  storage_space_data: Array<{ storage_space_id: number; storage_space_name: string }>
+  category_data: Array<{ category_id: number; category_name: string }>
+  platform_data: Array<{ exhibitor_platform_id: number; exhibitor_platform_name: string }>
+  currency_data: Array<{ money_currency_id: number; currency_code: string }>
 }
 
-const productItemsArray = ref<ProductItems | null>(null);
+const productItemsArray = ref<ProductItems | null>(null)
 
-async function getProductItems():Promise<void> {
+async function getProductItems(): Promise<void> {
   try {
-    const response = await axios.get('http://localhost:5000/api/product-items');
-    productItemsArray.value = response.data;
-    console.log("productItemsArray.value", productItemsArray.value);
+    const response = await axios.get('http://localhost:5000/api/product-items')
+    productItemsArray.value = response.data
+    console.log('productItemsArray.value', productItemsArray.value)
   } catch (error) {
-    console.error('商品項目の取得に失敗しました:', error);
-    throw error;
+    console.error('商品項目の取得に失敗しました:', error)
+    throw error
   }
 }
 
 /**
  * exhibit modal
  */
-const exhibitModalRef = ref<InstanceType<typeof ExhibitModal> | null>(null);
-const editingIndex = ref<number | null>(null);
+const exhibitModalRef = ref<InstanceType<typeof ExhibitModal> | null>(null)
+const editingIndex = ref<number | null>(null)
 
-const isModalDisabled = ref(false);
+const isModalDisabled = ref(false)
 
-const exhibits = ref<{ 
-  exhibitName: string; 
-  minPrice: number; 
-  currentPrice: number; 
-  exhibitQuantity: number; 
-  platform: number;
-  currency: number;
-}[]>([]);
+// const exhibits = ref<
+//   {
+//     exhibitName: string
+//     minPrice: number
+//     currentPrice: number
+//     exhibitQuantity: number
+//     platform: number
+//     currency: number
+//   }[]
+// >([])
 
 function openDisabledExhibitModal(index: number) {
-  editingIndex.value = index;
-  const exhibitData = exhibitInfo.value[index];  // exhibitInfo.valueからデータを取得
+  editingIndex.value = index
+  const exhibitData = exhibitInfo.value[index] // exhibitInfo.valueからデータを取得
 
   // exhibitDataが正しいデータを持っているかをログで確認
-  console.log("exhibitData", exhibitData);
+  console.log('exhibitData', exhibitData)
 
   if (exhibitModalRef.value) {
-    isModalDisabled.value = true;
-    exhibitModalRef.value.setData(exhibitData);  // データがundefinedでないか確認
-    exhibitModalRef.value.showModal();
+    isModalDisabled.value = true
+    exhibitModalRef.value.setData(exhibitData) // データがundefinedでないか確認
+    exhibitModalRef.value.showModal()
   }
 }
 
@@ -205,175 +215,31 @@ function openDisabledExhibitModal(index: number) {
 // }
 
 function handleShow() {
-  console.log('Upload modal is shown');
+  console.log('Upload modal is shown')
 }
 
 function handleHide() {
-  console.log('Upload modal is hidden');
+  console.log('Upload modal is hidden')
 }
-
-/**
- * 画像をS3にアップロード 
- */
-// async function uploadImageToS3(file: File) {
-//   try {
-//     const formData = new FormData();
-//     formData.append('photo', file);
-//     console.log("imege_response", formData);
-
-//     const response = await axios.post('http://localhost:5000/api/upload-images', formData, {
-//       headers: {
-//         'Content-Type': 'multipart/form-data',
-//       },
-//     });
-
-//     if (response.data && response.data.s3Url) {
-//       return response.data.s3Url;
-//     } else {
-//       throw new Error('S3 URLが返されませんでした');
-//     }
-//   } catch (error) {
-//     console.error('画像のアップロードに失敗しました:', error);
-//     throw error;
-//   }
-// }
-
-// async function testUploadImageToS3() {
-//   try {
-//     // photosにファイルが含まれているか確認
-//     if (photos.value.length === 0) {
-//       alert('アップロードする画像を選択してください。');
-//       return;
-//     }
-
-//     // 1枚目の画像をS3にアップロード
-//     const s3Url = await uploadImageToS3(photos.value[0]);
-
-//     if (s3Url) {
-//       console.log('画像がS3にアップロードされました:', s3Url);
-//       alert(`画像がアップロードされました: ${s3Url}`);
-//     } else {
-//       alert('画像のアップロードに失敗しました。');
-//     }
-//   } catch (error) {
-//     console.error('画像のアップロード中にエラーが発生しました:', error);
-//     alert('画像のアップロードに失敗しました。');
-//   }
-// }
-
-// async function setProducts():Promise<void> {
-//   try {
-//     // まず、全ての画像をS3にアップロード
-//     const uploadedImageUrls = [];
-//     for (const photo of photos.value) {
-//       const s3Url = await uploadImageToS3(photo);  // S3にアップロード
-//       uploadedImageUrls.push(s3Url);  // アップロードされたURLを格納
-//     }
-
-//     // S3アップロードが完了したら、productSubmitを呼び出す
-//     await productSubmit(uploadedImageUrls);
-
-//     alert('商品の登録が完了しました！');
-//     backExhibitList();
-
-//   } catch (error) {
-//     console.error('商品の登録に失敗しました:', error);
-//     alert('商品の登録に失敗しました。');
-//   }
-// }
-
-
-// TODO
-
-/**
- *  商品更新APIの定義
- */
-// const productName = ref('');
-// const productCode = ref('');
-// const price = ref(0);
-// const description = ref('');
-// const quantityInStock = ref(0);
-// const productUrl = ref('');
-// const workId = ref('');
-// const characterId = ref('');
-// const categoryId = ref('');
-// const storageSpaceId = ref('');
-// // const productTags = ref('');
-// const photos = ref<File[]>([]);
- 
-// async function productSubmit(_uploadedImageUrls: any[]) {
-//   try {
-//     // 全ての画像をS3にアップロード
-//     const uploadedImageUrls = [];
-//     for (const photo of photos.value) {
-//       const s3Url = await uploadImageToS3(photo);
-//       uploadedImageUrls.push(s3Url);
-//     }
-
-//     // JSON形式でリクエストデータを構築
-//     const requestData = {
-//       product_name: productName.value,
-//       product_code: productCode.value,
-//       price: price.value.toString(),
-//       description: description.value,
-//       quantity_in_stock: quantityInStock.value.toString(),
-//       product_url: productUrl.value,
-//       work_id: workId.value,
-//       character_id: characterId.value,
-//       category_id: categoryId.value,
-//       storage_space_id: storageSpaceId.value,
-//       product_tags: tags.value, // 配列に変換
-//       photo_urls: uploadedImageUrls, // S3から取得したURLを配列に追加
-//       exhibit_info: exhibits.value.map(exhibit => ({
-//         exhibitor_platform_id: exhibit.platform,
-//         product_tags: exhibit.tags ? exhibit.tags.join(',') : '',
-//         exhibit_display_name: exhibit.exhibitName,
-//         min_price: exhibit.minPrice.toString(),
-//         current_exhibit_price: exhibit.currentPrice.toString(),
-//         exhibit_quantity_in_stock: exhibit.exhibitQuantity.toString(),
-//       })),
-//     };
-
-//     // JSON形式でリクエストを送信
-//     const response = await axios.post('http://localhost:5000/api/products', requestData, {
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//     });
-
-//     console.log('API response:', response);
-//     alert('商品の登録が完了しました！');
-//   } catch (error) {
-//     if (axios.isAxiosError(error)) {
-//       console.error('Error response:', error.response?.data);
-//       alert(`商品の登録に失敗しました。エラー: ${error.response?.data?.message || '詳細不明'}`);
-//     } else {
-//       console.error('Error submitting form:', error);
-//       alert('商品の登録に失敗しました。');
-//     }
-//   }
-// }
-
-// const imageFile = ref<File | null>(null); // ファイルオブジェクトを保持するためのref
-// const imageUrl = ref<string | null>(null); // 表示する画像のURL
-
-// // ファイルを選択した際の処理
-// function onFileChange(event: Event) {
-//   const target = event.target as HTMLInputElement;
-//   if (target.files && target.files[0]) {
-//     imageFile.value = target.files[0];
-//     imageUrl.value = URL.createObjectURL(imageFile.value); // 画像URLを生成
-//   }
-// }
 </script>
 
 <template>
   <div class="detail-ctn">
-    <div style="display: flex;">
-      <img src="../assets/icons/undo.svg" alt="undo" class="material-symbols-outlined back-btn" @click="backExhibitList()"/>
+    <div style="display: flex">
+      <img
+        src="../assets/icons/undo.svg"
+        alt="undo"
+        class="material-symbols-outlined back-btn"
+        @click="backExhibitList()"
+      />
       <button type="button" class="btn btn-pink edit-btn" @click="editExhibit()">
         <div class="edit">Edit</div>
-        <img src="../assets/icons/arrow_outward.svg" alt="arrow_outward" class="material-symbols-outlined" style="font-size: 22px !important"/>
+        <img
+          src="../assets/icons/arrow_outward.svg"
+          alt="arrow_outward"
+          class="material-symbols-outlined"
+          style="font-size: 22px !important"
+        />
       </button>
     </div>
     <div class="card component-card">
@@ -382,8 +248,8 @@ function handleHide() {
         <form>
           <div class="image-collage">
             <div class="image-collage">
-              <div class="image-container" v-for="(photo, index) in uploadPhotos" :key="index">
-                <img :src="photo.image_path" alt="uploaded image" class="up-img"/>
+              <div v-for="(photo, index) in uploadPhotos" :key="index" class="image-container">
+                <img :src="photo.image_path" alt="uploaded image" class="up-img" />
               </div>
             </div>
             <!-- <div class="image-container">
@@ -409,74 +275,142 @@ function handleHide() {
           </div>
           <div class="mb-3">
             <label for="inputItemName" class="form-label">Product Name</label>
-            <input v-model="productName" type="text" class="form-control" id="inputItemName" aria-describedby="emailHelp" disabled>
-          </div>
-          <div class="mb-3">
-            <label for="inputProductCode" class="form-label">Product Code</label>
-            <input v-model="productCode" type="text" class="form-control" id="inputProductCode" disabled>
-          </div>
-          <div class="mb-3">
-            <label for="inputQuantityStock" class="form-label wid-175
-            ">List Price</label>
-            <input v-model="price" type="number" class="form-control form-30" id="inputQuantityStock" min="0" step="10" disabled>
-          </div>
-          <div class="mb-3">
-            <label for="inputItemDesciption" class="form-label">Description</label>
-            <textarea v-model="description" class="form-control" id="inputItemDesciption" rows="3" disabled></textarea>
-          </div>
-          <div class="mb-3">
-            <label for="inputQuantityStock" class="form-label wid-175
-            ">Quantity in stock</label>
-            <input v-model="quantityInStock" type="number" class="form-control form-30" id="inputQuantityStock" min="0" step="1" disabled>
-          </div>
-          <div class="mb-3">
-            <label for="inputItemTag" class="form-label">Product Tag</label>
-            <!-- <input v-model="productTags" type="text" class="form-control" id="inputItemTag"> -->
-            <input type="hidden" name="tags" class="form-control" id="inputItemTag" :value="tagsJson" disabled/>
-            <vue3-tags-input
-              v-model:tags="tags"
-              placeholder="タグを入力して下さい"
-              @on-tags-changed="onTagsChanged"
-              class="custom-tags-input form-control"
+            <input
+              id="inputItemName"
+              v-model="productName"
+              type="text"
+              class="form-control"
+              aria-describedby="emailHelp"
               disabled
             />
           </div>
           <div class="mb-3">
-            <label for="inputItemName" class="form-label">Product URL</label>
-            <input v-model="productUrl" type="text" class="form-control" id="inputItemName" aria-describedby="emailHelp" disabled>
+            <label for="inputProductCode" class="form-label">Product Code</label>
+            <input
+              id="inputProductCode"
+              v-model="productCode"
+              type="text"
+              class="form-control"
+              disabled
+            />
           </div>
           <div class="mb-3">
-            <label for="inputQuantityStock" class="form-label wid-175
-            ">Work</label>
-            <select v-model="workId" class="form-control form-30" id="workSelect" disabled>
-              <option v-for="work in productItemsArray?.work_data || []" :value="work.work_id" :key="work.work_id">
+            <label for="inputQuantityStock" class="form-label wid-175">List Price</label>
+            <input
+              id="inputQuantityStock"
+              v-model="price"
+              type="number"
+              class="form-control form-30"
+              min="0"
+              step="10"
+              disabled
+            />
+          </div>
+          <div class="mb-3">
+            <label for="inputItemDesciption" class="form-label">Description</label>
+            <textarea
+              id="inputItemDesciption"
+              v-model="description"
+              class="form-control"
+              rows="3"
+              disabled
+            ></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="inputQuantityStock" class="form-label wid-175">Quantity in stock</label>
+            <input
+              id="inputQuantityStock"
+              v-model="quantityInStock"
+              type="number"
+              class="form-control form-30"
+              min="0"
+              step="1"
+              disabled
+            />
+          </div>
+          <div class="mb-3">
+            <label for="inputItemTag" class="form-label">Product Tag</label>
+            <input
+              id="inputItemTag"
+              type="hidden"
+              name="tags"
+              class="form-control"
+              :value="tagsJson"
+              :disabled="true"
+            />
+            <vue3-tags-input
+              v-model:tags="tags"
+              placeholder="タグを入力して下さい"
+              class="custom-tags-input form-control"
+              :disabled="true"
+              @on-tags-changed="onTagsChanged"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="inputItemName" class="form-label">Product URL</label>
+            <input
+              id="inputItemName"
+              v-model="productUrl"
+              type="text"
+              class="form-control"
+              aria-describedby="emailHelp"
+              disabled
+            />
+          </div>
+          <div class="mb-3">
+            <label for="inputQuantityStock" class="form-label wid-175">Work</label>
+            <select id="workSelect" v-model="workId" class="form-control form-30" disabled>
+              <option
+                v-for="work in productItemsArray?.work_data || []"
+                :key="work.work_id"
+                :value="work.work_id"
+              >
                 {{ work.work_name }}
               </option>
             </select>
           </div>
           <div class="mb-3">
-            <label for="workSelect" class="form-label wid-175
-            ">Character</label>
-            <select v-model="characterId" class="form-control form-30" id="characterSelect" disabled>
-              <option v-for="character in productItemsArray?.character_data || []" :value="character.character_id" :key="character.character_id">
+            <label for="workSelect" class="form-label wid-175">Character</label>
+            <select
+              id="characterSelect"
+              v-model="characterId"
+              class="form-control form-30"
+              disabled
+            >
+              <option
+                v-for="character in productItemsArray?.character_data || []"
+                :key="character.character_id"
+                :value="character.character_id"
+              >
                 {{ character.character_name }}
               </option>
             </select>
           </div>
           <div class="mb-3">
-            <label for="inputQuantityStock" class="form-label wid-175
-            ">Category</label>
-            <select v-model="categoryId" class="form-control form-30" id="categorySelect" disabled>
-              <option v-for="category in productItemsArray?.category_data || []" :value="category.category_id" :key="category.category_id">
+            <label for="inputQuantityStock" class="form-label wid-175">Category</label>
+            <select id="categorySelect" v-model="categoryId" class="form-control form-30" disabled>
+              <option
+                v-for="category in productItemsArray?.category_data || []"
+                :key="category.category_id"
+                :value="category.category_id"
+              >
                 {{ category.category_name }}
               </option>
             </select>
           </div>
           <div class="mb-3">
-            <label for="inputQuantityStock" class="form-label wid-175
-            ">Storage Space</label>
-            <select v-model="storageSpaceId" class="form-control form-30" id="storageSpaceSelect" disabled>
-              <option v-for="storage_space in productItemsArray?.storage_space_data || []" :value="storage_space.storage_space_id" :key="storage_space.storage_space_id">
+            <label for="inputQuantityStock" class="form-label wid-175">Storage Space</label>
+            <select
+              id="storageSpaceSelect"
+              v-model="storageSpaceId"
+              class="form-control form-30"
+              disabled
+            >
+              <option
+                v-for="storage_space in productItemsArray?.storage_space_data || []"
+                :key="storage_space.storage_space_id"
+                :value="storage_space.storage_space_id"
+              >
                 {{ storage_space.storage_space_name }}
               </option>
             </select>
@@ -484,32 +418,31 @@ function handleHide() {
           <div class="exhibit-card-container">
             <div v-for="(exhibit, index) in exhibitInfo" :key="index" class="mb-3">
               <ExhibitCard
-                :title="exhibit.exhibit_display_name" 
-                :minPrice="exhibit.min_price" 
-                :currentPrice="exhibit.current_exhibit_price" 
-                :exhibitQuantity="exhibit.exhibit_quantity_in_stock"
+                :title="exhibit.exhibit_display_name"
+                :min-price="exhibit.min_price"
+                :current-price="exhibit.current_exhibit_price"
+                :exhibit-quantity="exhibit.exhibit_quantity_in_stock"
                 :platform="exhibit.exhibitor_platform_id"
                 :curency="exhibit.money_currency_id"
                 @click="openDisabledExhibitModal(index)"
               />
             </div>
-            <!-- <ExhibitCard 
-              v-for="(exhibit, index) in exhibits" 
-              :key="index" 
-              :title="exhibit.exhibitName" 
-              :minPrice="exhibit.minPrice" 
-              :currentPrice="exhibit.currentPrice" 
-              :exhibitQuantity="exhibit.exhibitQuantity"
-              :platform="exhibit.platform"
-              :curency="exhibit.currency"
-              @editExhibit="editExhibitModal(index)"
-            /> -->
           </div>
         </form>
       </div>
     </div>
-    <UploadModal ref="uploadModalRef" @show="handleShow" @hide="handleHide" @filesUploaded="handleFilesUploaded" />
-    <ExhibitModal ref="exhibitModalRef" @show="handleShow" @hide="handleHide" :disabled="isModalDisabled"/>
+    <UploadModal
+      ref="uploadModalRef"
+      @show="handleShow"
+      @hide="handleHide"
+      @files-uploaded="handleFilesUploaded"
+    />
+    <ExhibitModal
+      ref="exhibitModalRef"
+      :disabled="isModalDisabled"
+      @show="handleShow"
+      @hide="handleHide"
+    />
   </div>
 </template>
 
@@ -520,7 +453,6 @@ function handleHide() {
   border-radius: 10px;
 }
 
-/* test用 */
 .image-collage {
   display: flex;
   justify-content: center;
@@ -566,7 +498,8 @@ function handleHide() {
 }
 /*  */
 
-.header, .detail-ctn {
+.header,
+.detail-ctn {
   margin: 40px 40px 20px;
 }
 
@@ -575,12 +508,12 @@ function handleHide() {
   margin-top: 0 !important;
   margin-right: 10px;
   margin-left: 0 !important;
-  color: #D588A0;
+  color: #d588a0;
   cursor: pointer;
 }
 
 .btn-set {
-  margin:2%;
+  margin: 2%;
 }
 
 .edit-btn {
@@ -594,7 +527,9 @@ function handleHide() {
   padding-top: 2px;
 }
 
-.edit-btn:focus, .edit-btn:active, .edit-btn:hover {
+.edit-btn:focus,
+.edit-btn:active,
+.edit-btn:hover {
   background-color: #e59bb3 !important;
 }
 
@@ -624,7 +559,7 @@ function handleHide() {
 }
 
 .product-price {
-  color: #7D798D;
+  color: #7d798d;
   font-weight: bold;
   text-align: right;
 }
@@ -642,9 +577,9 @@ function handleHide() {
 }
 
 .btn-pink {
-  background-color: #ECB1C4;
-  border: #ECB1C4;
-  color: #FAFCFD;
+  background-color: #ecb1c4;
+  border: #ecb1c4;
+  color: #fafcfd;
   width: 110px;
   height: 32px;
   border-radius: 10px;
@@ -653,10 +588,12 @@ function handleHide() {
   display: flex;
 }
 
-.btn-pink:hover, .btn-pink:active, .btn-pink:focus {
-  background-color: #EDA3B8;
-  border: #EDA3B8;
-  color: #FAFCFD;
+.btn-pink:hover,
+.btn-pink:active,
+.btn-pink:focus {
+  background-color: #eda3b8;
+  border: #eda3b8;
+  color: #fafcfd;
 }
 
 .exhibit-btn {
@@ -664,10 +601,12 @@ function handleHide() {
   background-color: #fbb3ca !important;
   height: 45px;
   border: #fbb3ca;
-  color: #FAFCFD !important;
+  color: #fafcfd !important;
 }
 
-.exhibit-btn:hover, .exhibit-btn:active, .exhibit-btn:focus {
+.exhibit-btn:hover,
+.exhibit-btn:active,
+.exhibit-btn:focus {
   background-color: #ff93b6 !important;
   border: #ff93b6;
 }
@@ -677,10 +616,12 @@ function handleHide() {
   background-color: #ff93b6 !important;
   height: 45px;
   border: #ff93b6;
-  color: #FAFCFD !important;
+  color: #fafcfd !important;
 }
 
-.submit-btn:hover, .submit-btn:active, .submit-btn:focus {
+.submit-btn:hover,
+.submit-btn:active,
+.submit-btn:focus {
   background-color: #e97a9e !important;
   border: #e97a9e;
 }
@@ -691,7 +632,10 @@ function handleHide() {
   font-size: 19px;
 }
 
-.disabled-btn, .disabled-btn:hover, .disabled-btn:active, .disabled-btn:focus {
+.disabled-btn,
+.disabled-btn:hover,
+.disabled-btn:active,
+.disabled-btn:focus {
   background-color: #e1d1d6;
   height: 40px;
   border: #e1d1d6;
@@ -713,7 +657,7 @@ function handleHide() {
 
 .imgmode {
   font-size: 80px;
-  color: #ccc; 
+  color: #ccc;
   margin: 0 !important;
 }
 
@@ -721,15 +665,15 @@ function handleHide() {
   width: 1523px;
   height: 100%;
   margin-top: 30px;
-  box-shadow: 0 4px 12px #A0A3B4;
+  box-shadow: 0 4px 12px #a0a3b4;
   position: relative;
 }
 
 .card-text {
-  background-color: #FAF3F6;
+  background-color: #faf3f6;
   border-radius: 10px 10px 0 0;
-  border-bottom: #B2B8C6;
-  color:	#bf8f9f;
+  border-bottom: #b2b8c6;
+  color: #bf8f9f;
   font-weight: bold;
   font-size: 25px;
   text-align: left;
@@ -738,19 +682,21 @@ function handleHide() {
 
 .component-card {
   border-radius: 10px;
-  color: #D06179;
-  border: #B2B8C6;
+  color: #d06179;
+  border: #b2b8c6;
 }
 
 .bi-heart.active {
-  color: #E83E8C;
+  color: #e83e8c;
 }
 
 .btn-detail {
   color: #f78aa9;
 }
 
-.btn-detail:hover, .btn-detail:active, .btn-detail:focus {
+.btn-detail:hover,
+.btn-detail:active,
+.btn-detail:focus {
   color: #f777a0;
 }
 
@@ -875,11 +821,14 @@ function handleHide() {
   color: white; /* タグの削除ボタンの色: 白色 */
 }
 
-.v3ti--focus {
-  box-shadow: none;
-  border-color: #86B7FE;
+.custom-tags-input[disabled] {
+  background-color: #f7eff38a;
 }
 
+.v3ti--focus {
+  box-shadow: none;
+  border-color: #86b7fe;
+}
 </style>
 
 <style>

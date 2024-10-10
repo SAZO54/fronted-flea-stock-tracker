@@ -1,9 +1,8 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div class="ana-ctn">
-    <div style="font-size: 30px;">Created after learning Python</div>
+    <div style="font-size: 30px">Created after learning Python</div>
   </div>
 </template>
 

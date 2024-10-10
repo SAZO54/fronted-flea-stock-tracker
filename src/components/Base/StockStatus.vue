@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
 
 /**
  * pageTransition
  */
-const router = useRouter();
+const router = useRouter()
 
 function stockDetailTransition(): void {
-  router.push('/stock');
+  router.push('/stock')
 }
-
 </script>
 
 <template>
@@ -19,14 +18,14 @@ function stockDetailTransition(): void {
       <div class="table-responsive">
         <table class="table">
           <thead>
-              <tr>
-                <th scope="col">Order</th>
-                <th scope="col">Product</th>
-                <th scope="col">Customer</th>
-                <th scope="col">Total</th>
-                <th scope="col">Date</th>
-                <th scope="col"></th>
-              </tr>
+            <tr>
+              <th scope="col">Order</th>
+              <th scope="col">Product</th>
+              <th scope="col">Customer</th>
+              <th scope="col">Total</th>
+              <th scope="col">Date</th>
+              <th scope="col"></th>
+            </tr>
           </thead>
           <tbody>
             <tr>
@@ -35,7 +34,13 @@ function stockDetailTransition(): void {
               <td>johndoe@gmail.com</td>
               <td>€61.11</td>
               <td>Aug 31 2020</td>
-              <td><img src="../../assets/icons/arrow_circle_right.svg" alt="arrow_circle_right" class="btn-detail"/></td>
+              <td>
+                <img
+                  src="../../assets/icons/arrow_circle_right.svg"
+                  alt="arrow_circle_right"
+                  class="btn-detail"
+                />
+              </td>
             </tr>
             <tr>
               <th scope="row">17370540</th>
@@ -43,7 +48,13 @@ function stockDetailTransition(): void {
               <td>jacob.monroe@company.com</td>
               <td>$153.11</td>
               <td>Aug 28 2020</td>
-              <td><img src="../../assets/icons/arrow_circle_right.svg" alt="arrow_circle_right" class="btn-detail"/></td>
+              <td>
+                <img
+                  src="../../assets/icons/arrow_circle_right.svg"
+                  alt="arrow_circle_right"
+                  class="btn-detail"
+                />
+              </td>
             </tr>
             <tr>
               <th scope="row">17371705</th>
@@ -51,7 +62,13 @@ function stockDetailTransition(): void {
               <td>johndoe@gmail.com</td>
               <td>€61.11</td>
               <td>Aug 31 2020</td>
-              <td><img src="../../assets/icons/arrow_circle_right.svg" alt="arrow_circle_right" class="btn-detail"/></td>
+              <td>
+                <img
+                  src="../../assets/icons/arrow_circle_right.svg"
+                  alt="arrow_circle_right"
+                  class="btn-detail"
+                />
+              </td>
             </tr>
             <tr>
               <th scope="row">17370540</th>
@@ -59,7 +76,13 @@ function stockDetailTransition(): void {
               <td>jacob.monroe@company.com</td>
               <td>$153.11</td>
               <td>Aug 28 2020</td>
-              <td><img src="../../assets/icons/arrow_circle_right.svg" alt="arrow_circle_right" class="btn-detail"/></td>
+              <td>
+                <img
+                  src="../../assets/icons/arrow_circle_right.svg"
+                  alt="arrow_circle_right"
+                  class="btn-detail"
+                />
+              </td>
             </tr>
             <tr>
               <th scope="row">17371705</th>
@@ -67,7 +90,13 @@ function stockDetailTransition(): void {
               <td>johndoe@gmail.com</td>
               <td>€61.11</td>
               <td>Aug 31 2020</td>
-              <td><img src="../../assets/icons/arrow_circle_right.svg" alt="arrow_circle_right" class="btn-detail"/></td>
+              <td>
+                <img
+                  src="../../assets/icons/arrow_circle_right.svg"
+                  alt="arrow_circle_right"
+                  class="btn-detail"
+                />
+              </td>
             </tr>
             <tr>
               <th scope="row">17370540</th>
@@ -75,14 +104,22 @@ function stockDetailTransition(): void {
               <td>jacob.monroe@company.com</td>
               <td>$153.11</td>
               <td>Aug 28 2020</td>
-              <td><img src="../../assets/icons/arrow_circle_right.svg" alt="arrow_circle_right" class="btn-detail"/></td>
+              <td>
+                <img
+                  src="../../assets/icons/arrow_circle_right.svg"
+                  alt="arrow_circle_right"
+                  class="btn-detail"
+                />
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
     <div class="card-body">
-      <button type="button" class="btn btn-pink" @click="stockDetailTransition">Confirm All Stock</button>
+      <button type="button" class="btn btn-pink" @click="stockDetailTransition">
+        Confirm All Stock
+      </button>
     </div>
   </div>
 </template>
@@ -93,15 +130,15 @@ function stockDetailTransition(): void {
   height: 550px;
   margin-left: 40px;
   margin-top: 50px;
-  box-shadow: 0 4px 12px #A0A3B4;
+  box-shadow: 0 4px 12px #a0a3b4;
   position: relative;
 }
 
 .card-text {
-  background-color: #FAF3F6;
+  background-color: #faf3f6;
   border-radius: 10px 10px 0 0;
-  border-bottom: #B2B8C6;
-  color:	#bf8f9f;
+  border-bottom: #b2b8c6;
+  color: #bf8f9f;
   font-weight: bold;
   font-size: 25px;
   text-align: left;
@@ -110,18 +147,18 @@ function stockDetailTransition(): void {
 
 .component-card {
   border-radius: 10px;
-  color: #D06179;
-  border: #B2B8C6;
+  color: #d06179;
+  border: #b2b8c6;
 }
 
 .bi-heart.active {
-  color: #E83E8C;
+  color: #e83e8c;
 }
 
 .btn-pink {
-  background-color: #ECB1C4;
-  border: #ECB1C4;
-  color: #FAFCFD;
+  background-color: #ecb1c4;
+  border: #ecb1c4;
+  color: #fafcfd;
   width: 91%;
   height: 42px;
   font-size: 18px;
@@ -133,16 +170,20 @@ function stockDetailTransition(): void {
   margin: 0 20px;
 }
 
-.btn-pink:hover, .btn-pink:active, .btn-pink:focus {
-  background-color: #EDA3B8;
-  border: #EDA3B8;
+.btn-pink:hover,
+.btn-pink:active,
+.btn-pink:focus {
+  background-color: #eda3b8;
+  border: #eda3b8;
 }
 
 .btn-detail {
   color: #f78aa9;
 }
 
-.btn-detail:hover, .btn-detail:active, .btn-detail:focus {
+.btn-detail:hover,
+.btn-detail:active,
+.btn-detail:focus {
   color: #f777a0;
 }
 </style>

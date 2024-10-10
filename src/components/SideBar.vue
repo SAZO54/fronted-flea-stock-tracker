@@ -1,21 +1,20 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { useSidebarStore } from '../stores/sideBarStore';
+import { ref, computed } from 'vue'
+import { useSidebarStore } from '../stores/sideBarStore'
 
-const isDropdownOpen = ref(false);
+const isDropdownOpen = ref(false)
 
 function accountStatus(): void {
-  isDropdownOpen.value = !isDropdownOpen.value;
-  console.log(isDropdownOpen.value);
+  isDropdownOpen.value = !isDropdownOpen.value
+  console.log(isDropdownOpen.value)
 }
 
 /**
  * page
  */
-const sidebarStore = useSidebarStore();
+const sidebarStore = useSidebarStore()
 
-const isActive = (path: string) => computed(() => sidebarStore.activePath.startsWith(path));
-
+const isActive = (path: string) => computed(() => sidebarStore.activePath.startsWith(path))
 </script>
 
 <template>
@@ -25,15 +24,22 @@ const isActive = (path: string) => computed(() => sidebarStore.activePath.starts
         <ul class="nav flex-column">
           <li class="nav-item">
             <div class="icon-circle white-circle">
-              <img src="../assets/icons/home.svg" alt="home" class="pink-icon"/>
+              <img src="../assets/icons/home.svg" alt="home" class="pink-icon" />
             </div>
-            <a class="nav-link" :class="{ 'active-link': isActive('/dashboard').value }" href="/dashboard">Dashboard</a>
+            <a
+              class="nav-link"
+              :class="{ 'active-link': isActive('/dashboard').value }"
+              href="/dashboard"
+              >Dashboard</a
+            >
           </li>
           <li class="nav-item">
             <div class="icon-circle pink-circle">
-              <img src="../assets/icons/kid_star.svg" alt="kid_star" class="white-icon"/>
+              <img src="../assets/icons/kid_star.svg" alt="kid_star" class="white-icon" />
             </div>
-            <a class="nav-link" :class="{ 'active-link': isActive('/stock').value }" href="/stock">Stock Manage</a>
+            <a class="nav-link" :class="{ 'active-link': isActive('/stock').value }" href="/stock"
+              >Stock Manage</a
+            >
           </li>
           <!-- <li class="nav-item">
             <div class="icon-circle pink-circle">
@@ -43,39 +49,74 @@ const isActive = (path: string) => computed(() => sidebarStore.activePath.starts
           </li> -->
           <li class="nav-item">
             <div class="icon-circle white-circle">
-              <img src="../assets/icons/history.svg" alt="history" class="pink-icon"/>
+              <img src="../assets/icons/history.svg" alt="history" class="pink-icon" />
             </div>
-            <a class="nav-link" :class="{ 'active-link': isActive('/history').value }" href="/history">History</a>
+            <a
+              class="nav-link"
+              :class="{ 'active-link': isActive('/history').value }"
+              href="/history"
+              >History</a
+            >
           </li>
           <li class="nav-item">
             <div class="icon-circle pink-circle">
-              <img src="../assets/icons/deceased.svg" alt="deceased" class="white-icon"/>
+              <img src="../assets/icons/deceased.svg" alt="deceased" class="white-icon" />
             </div>
-            <a class="nav-link" :class="{ 'active-link': isActive('/transaction-status').value }" href="/transaction-status">Transaction Status</a>
+            <a
+              class="nav-link"
+              :class="{ 'active-link': isActive('/transaction-status').value }"
+              href="/transaction-status"
+              >Transaction Status</a
+            >
           </li>
           <li class="nav-item">
-            <div class="icon-circle white-circle"> 
-              <img src="../assets/icons/settings-heart.svg" alt="settings_heart" class="pink-icon"/>
+            <div class="icon-circle white-circle">
+              <img
+                src="../assets/icons/settings-heart.svg"
+                alt="settings_heart"
+                class="pink-icon"
+              />
             </div>
-            <a class="nav-link" :class="{ 'active-link': isActive('/setting').value }" href="/setting">Setting</a>
+            <a
+              class="nav-link"
+              :class="{ 'active-link': isActive('/setting').value }"
+              href="/setting"
+              >Setting</a
+            >
           </li>
           <li class="nav-item">
             <div class="icon-circle pink-circle">
-              <img src="../assets/icons/savings.svg" alt="savings" class="white-icon"/>
+              <img src="../assets/icons/savings.svg" alt="savings" class="white-icon" />
             </div>
-            <a class="nav-link" :class="{ 'active-link': isActive('/money').value }" href="/money">Money Manage</a>
+            <a class="nav-link" :class="{ 'active-link': isActive('/money').value }" href="/money"
+              >Money Manage</a
+            >
           </li>
           <li class="nav-item">
-            <div class="icon-circle white-circle"> 
-              <img src="../assets/icons/monitoring_pink.svg" alt="monitoring" class="pink-icon"/>
+            <div class="icon-circle white-circle">
+              <img src="../assets/icons/monitoring_pink.svg" alt="monitoring" class="pink-icon" />
             </div>
-            <a class="nav-link" :class="{ 'active-link': isActive('/analysis').value }" href="/analysis">Analysis</a>
+            <a
+              class="nav-link"
+              :class="{ 'active-link': isActive('/analysis').value }"
+              href="/analysis"
+              >Analysis</a
+            >
           </li>
           <li class="nav-item">
-            <div class="icon-circle pink-circle"> 
-              <img src="../assets/icons/mark_unread_chat_alt.svg" alt="mark_unread_chat_alt" class="white-icon"/>
+            <div class="icon-circle pink-circle">
+              <img
+                src="../assets/icons/mark_unread_chat_alt.svg"
+                alt="mark_unread_chat_alt"
+                class="white-icon"
+              />
             </div>
-            <a class="nav-link" :class="{ 'active-link': isActive('/messages').value }" href="/messages">Messages</a>
+            <a
+              class="nav-link"
+              :class="{ 'active-link': isActive('/messages').value }"
+              href="/messages"
+              >Messages</a
+            >
           </li>
         </ul>
       </div>
@@ -84,22 +125,30 @@ const isActive = (path: string) => computed(() => sidebarStore.activePath.starts
           <button class="btn btn-secondary dropdown-toggle" type="button" @click="accountStatus">
             Sarina
           </button>
-          <ul class="dropdown-menu" v-if="isDropdownOpen" :class="{ 'show-menu': isDropdownOpen }">
+          <ul v-if="isDropdownOpen" class="dropdown-menu" :class="{ 'show-menu': isDropdownOpen }">
             <li>
               <a class="dropdown-item" href="/setting">
-                <img src="../assets/icons/settings-heart.svg" alt="settings_heart" style="margin-right: 8px"/>
+                <img
+                  src="../assets/icons/settings-heart.svg"
+                  alt="settings_heart"
+                  style="margin-right: 8px"
+                />
                 <div class="menu">Setting</div>
               </a>
             </li>
             <li>
               <a class="dropdown-item" href="/messages">
-                <img src="../assets/icons/mark_unread_chat_pink.svg" alt="message_pink" style="margin-right: 8px"/>
+                <img
+                  src="../assets/icons/mark_unread_chat_pink.svg"
+                  alt="message_pink"
+                  style="margin-right: 8px"
+                />
                 <div class="menu">Messages</div>
               </a>
             </li>
             <li>
               <a class="dropdown-item" href="/logout">
-                <img src="../assets/icons/logout.svg" alt="logout" style="margin-right: 8px"/>
+                <img src="../assets/icons/logout.svg" alt="logout" style="margin-right: 8px" />
                 <div class="menu">Sign out</div>
               </a>
             </li>
@@ -118,7 +167,7 @@ const isActive = (path: string) => computed(() => sidebarStore.activePath.starts
   top: 0;
   background-color: #dcedff75;
   transition: left 0.3s;
-  box-shadow: 4px 0 6px -1px #A9B1C5;
+  box-shadow: 4px 0 6px -1px #a9b1c5;
   position: relative;
   position: fixed;
   z-index: 900;
@@ -170,12 +219,14 @@ const isActive = (path: string) => computed(() => sidebarStore.activePath.starts
   padding-left: 12px;
 }
 
-.nav-link:hover, .nav-link:active, .nav-link:focus {
-  color: #E8A2B8;
+.nav-link:hover,
+.nav-link:active,
+.nav-link:focus {
+  color: #e8a2b8;
 }
 
 .active-link {
-  color: #E8A2B8;
+  color: #e8a2b8;
   font-weight: bold;
 }
 
@@ -190,31 +241,33 @@ const isActive = (path: string) => computed(() => sidebarStore.activePath.starts
 }
 
 .white-circle {
-  background-color: #FFFAF7;
+  background-color: #fffaf7;
 }
 
 .pink-circle {
-  background-color: #E8A5BB;
+  background-color: #e8a5bb;
 }
 
 .white-icon {
-  color: #FFFAF7;
+  color: #fffaf7;
 }
 
 .pink-icon {
-  color: #E8A5BB;
+  color: #e8a5bb;
 }
 
 .dropdown-toggle {
-  background-color: #E8A5BB;
-  border-color: #EBC1CD;
+  background-color: #e8a5bb;
+  border-color: #ebc1cd;
   width: 200px;
   font-size: 18px;
 }
 
-.dropdown-toggle:hover, .dropdown-toggle:focus, .dropdown-toggle:active {
-  background-color: #EDA3B8;
-  border-color: #EDA3B8;
+.dropdown-toggle:hover,
+.dropdown-toggle:focus,
+.dropdown-toggle:active {
+  background-color: #eda3b8;
+  border-color: #eda3b8;
 }
 
 .menu {

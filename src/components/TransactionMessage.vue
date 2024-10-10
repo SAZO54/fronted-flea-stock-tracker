@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from 'vue'
 
 // const transactions = ref([
 //   { id: '1', name: 'Item A', status: 'Packing', destination: 'USA', platform: 'Mercari' },
@@ -10,47 +10,46 @@ import { ref } from 'vue';
 /**
  * map button
  */
-const messageActive = ref(true);
+const messageActive = ref(true)
 
-function msgTabSwitch():void {
-  messageActive.value = !messageActive.value;
+function msgTabSwitch(): void {
+  messageActive.value = !messageActive.value
 }
 
-console.log("messageActive", messageActive.value);
-
+console.log('messageActive', messageActive.value)
 </script>
 
 <template>
   <div class="flex">
     <div>
-      <div class="msg-ctn" v-if="messageActive">
+      <div v-if="messageActive" class="msg-ctn">
         <div class="flex">
           <button class="btn btn-pink disabled" @click="msgTabSwitch">message</button>
           <button class="btn disabled-btn do-btn" @click="msgTabSwitch">TODO</button>
-        </div> 
-        <div class="map-container" v-if="messageActive">
-          <img src="../assets/world.png" alt="World Image" class="world-img"/>
+        </div>
+        <div v-if="messageActive" class="map-container">
+          <img src="../assets/world.png" alt="World Image" class="world-img" />
         </div>
       </div>
-      <div class="msg-ctn" v-else>
+      <div v-else class="msg-ctn">
         <div class="flex">
           <button class="btn disabled-btn" @click="msgTabSwitch">message</button>
           <button class="btn btn-pink do-btn disabled" @click="msgTabSwitch">TODO</button>
-        </div> 
+        </div>
         <div class="card component-card">
           <div class="card-text">Task</div>
           <div class="card-body">
             <div class="table-responsive">
               <table class="table">
                 <thead>
-                    <tr>
-                      <th scope="col">TransactionID</th>
-                      <th scope="col">Category</th>
-                      <th scope="col">Status</th>
-                      <th scope="col">Amount</th>
-                      <th scope="col">Date</th>
-                      <th scope="col"></th>
-                    </tr>
+                  <tr>
+                    <th scope="col">TransactionID</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Date</th>
+                    <th scope="col"></th>
+                  </tr>
                 </thead>
                 <tbody>
                   <tr>
@@ -59,7 +58,9 @@ console.log("messageActive", messageActive.value);
                     <td>johndoe@gmail.com</td>
                     <td>€61.11</td>
                     <td>Aug 31 2020</td>
-                    <td><span class="material-symbols-outlined btn-detail">arrow_circle_right</span></td>
+                    <td>
+                      <span class="material-symbols-outlined btn-detail">arrow_circle_right</span>
+                    </td>
                   </tr>
                   <tr>
                     <th scope="row">17370540</th>
@@ -67,7 +68,9 @@ console.log("messageActive", messageActive.value);
                     <td>jacob.monroe@company.com</td>
                     <td>$153.11</td>
                     <td>Aug 28 2020</td>
-                    <td><span class="material-symbols-outlined btn-detail">arrow_circle_right</span></td>
+                    <td>
+                      <span class="material-symbols-outlined btn-detail">arrow_circle_right</span>
+                    </td>
                   </tr>
                   <tr>
                     <th scope="row">17371705</th>
@@ -75,7 +78,9 @@ console.log("messageActive", messageActive.value);
                     <td>johndoe@gmail.com</td>
                     <td>€61.11</td>
                     <td>Aug 31 2020</td>
-                    <td><span class="material-symbols-outlined btn-detail">arrow_circle_right</span></td>
+                    <td>
+                      <span class="material-symbols-outlined btn-detail">arrow_circle_right</span>
+                    </td>
                   </tr>
                   <tr>
                     <th scope="row">17370540</th>
@@ -83,7 +88,9 @@ console.log("messageActive", messageActive.value);
                     <td>jacob.monroe@company.com</td>
                     <td>$153.11</td>
                     <td>Aug 28 2020</td>
-                    <td><span class="material-symbols-outlined btn-detail">arrow_circle_right</span></td>
+                    <td>
+                      <span class="material-symbols-outlined btn-detail">arrow_circle_right</span>
+                    </td>
                   </tr>
                   <tr>
                     <th scope="row">17371705</th>
@@ -91,7 +98,9 @@ console.log("messageActive", messageActive.value);
                     <td>johndoe@gmail.com</td>
                     <td>€61.11</td>
                     <td>Aug 31 2020</td>
-                    <td><span class="material-symbols-outlined btn-detail">arrow_circle_right</span></td>
+                    <td>
+                      <span class="material-symbols-outlined btn-detail">arrow_circle_right</span>
+                    </td>
                   </tr>
                   <tr>
                     <th scope="row">17370540</th>
@@ -99,7 +108,9 @@ console.log("messageActive", messageActive.value);
                     <td>jacob.monroe@company.com</td>
                     <td>$153.11</td>
                     <td>Aug 28 2020</td>
-                    <td><span class="material-symbols-outlined btn-detail">arrow_circle_right</span></td>
+                    <td>
+                      <span class="material-symbols-outlined btn-detail">arrow_circle_right</span>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -127,19 +138,22 @@ console.log("messageActive", messageActive.value);
 }
 
 .btn-pink {
-  background-color: #ECB1C4 !important;
+  background-color: #ecb1c4 !important;
   height: 45px;
-  border: #ECB1C4;
-  color: #FAFCFD !important;
+  border: #ecb1c4;
+  color: #fafcfd !important;
 }
 
 .btn-pink:hover {
-  background-color: #EDA3B8;
-  border: #EDA3B8;
-  color: #FAFCFD;
+  background-color: #eda3b8;
+  border: #eda3b8;
+  color: #fafcfd;
 }
 
-.disabled-btn, .disabled-btn:hover, .disabled-btn:active, .disabled-btn:focus {
+.disabled-btn,
+.disabled-btn:hover,
+.disabled-btn:active,
+.disabled-btn:focus {
   background-color: #e1d1d6;
   height: 40px;
   border: #e1d1d6;
@@ -169,15 +183,15 @@ console.log("messageActive", messageActive.value);
   width: 1523px;
   height: 664px;
   margin-top: 30px;
-  box-shadow: 0 4px 12px #A0A3B4;
+  box-shadow: 0 4px 12px #a0a3b4;
   position: relative;
 }
 
 .card-text {
-  background-color: #FAF3F6;
+  background-color: #faf3f6;
   border-radius: 10px 10px 0 0;
-  border-bottom: #B2B8C6;
-  color:	#bf8f9f;
+  border-bottom: #b2b8c6;
+  color: #bf8f9f;
   font-weight: bold;
   font-size: 25px;
   text-align: left;
@@ -186,19 +200,21 @@ console.log("messageActive", messageActive.value);
 
 .component-card {
   border-radius: 10px;
-  color: #D06179;
-  border: #B2B8C6;
+  color: #d06179;
+  border: #b2b8c6;
 }
 
 .bi-heart.active {
-  color: #E83E8C;
+  color: #e83e8c;
 }
 
 .btn-detail {
   color: #f78aa9;
 }
 
-.btn-detail:hover, .btn-detail:active, .btn-detail:focus {
+.btn-detail:hover,
+.btn-detail:active,
+.btn-detail:focus {
   color: #f777a0;
 }
 </style>

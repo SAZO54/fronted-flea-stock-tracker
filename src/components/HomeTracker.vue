@@ -1,36 +1,39 @@
 <script setup lang="ts">
-import CardItem from './Base/CardItem.vue';
-import SellerTable from './Base/SellerTable.vue';
-import StockStatus from './Base/StockStatus.vue';
-import { useRouter } from 'vue-router';
+import CardItem from './Base/CardItem.vue'
+import SellerTable from './Base/SellerTable.vue'
+import StockStatus from './Base/StockStatus.vue'
+import { useRouter } from 'vue-router'
 
 /**
  * pageTransition
  */
-const router = useRouter();
+const router = useRouter()
 
 function analysisTransition() {
-  router.push('/analysis');
+  router.push('/analysis')
 }
-
 </script>
 
 <template>
   <div>
-    <div style="display: flex;">
+    <div style="display: flex">
       <StockStatus />
       <div>
-        <SellerTable cardTitle="Average Sales" :sellerAnalysis="analysisTransition"/>
-        <SellerTable cardTitle="Trade Trends" class="exhibit-item" :sellerAnalysis="analysisTransition"/>
+        <SellerTable card-title="Average Sales" :seller-analysis="analysisTransition" />
+        <SellerTable
+          card-title="Trade Trends"
+          class="exhibit-item"
+          :seller-analysis="analysisTransition"
+        />
       </div>
     </div>
     <div class="card-all">
-      <CardItem title="Total Items (総出品数)" cardTransition="/exhibit-details" />
-      <CardItem title="Transacted (取引済み)" cardTransition="/exhibit-details" />
-      <CardItem title="Dealing (取引中)" cardTransition="/exhibit-details" />
-      <CardItem title="Earnings (売上金額)" cardTransition="/money" />
-      <CardItem title="Favarite (お気に入り数)" cardTransition="/exhibit-details" />
-      <CardItem title="Expense (経費)" cardTransition="/money" />
+      <CardItem title="Total Items (総出品数)" card-transition="/exhibit-details" />
+      <CardItem title="Transacted (取引済み)" card-transition="/exhibit-details" />
+      <CardItem title="Dealing (取引中)" card-transition="/exhibit-details" />
+      <CardItem title="Earnings (売上金額)" card-transition="/money" />
+      <CardItem title="Favarite (お気に入り数)" card-transition="/exhibit-details" />
+      <CardItem title="Expense (経費)" card-transition="/money" />
     </div>
   </div>
 </template>
