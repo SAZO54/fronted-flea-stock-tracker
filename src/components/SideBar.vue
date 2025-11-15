@@ -38,7 +38,7 @@ const isActive = (path: string) => computed(() => sidebarStore.activePath.starts
               <img src="../assets/icons/kid_star.svg" alt="kid_star" class="white-icon" />
             </div>
             <a class="nav-link" :class="{ 'active-link': isActive('/stock').value }" href="/stock"
-              >Stock Manage</a
+              >在庫管理</a
             >
           </li>
           <!-- <li class="nav-item">
@@ -55,7 +55,7 @@ const isActive = (path: string) => computed(() => sidebarStore.activePath.starts
               class="nav-link"
               :class="{ 'active-link': isActive('/history').value }"
               href="/history"
-              >History</a
+              >出品管理（TODO）</a
             >
           </li>
           <li class="nav-item">
@@ -66,7 +66,7 @@ const isActive = (path: string) => computed(() => sidebarStore.activePath.starts
               class="nav-link"
               :class="{ 'active-link': isActive('/transaction-status').value }"
               href="/transaction-status"
-              >Transaction Status</a
+              >取引管理</a
             >
           </li>
           <li class="nav-item">
@@ -81,7 +81,7 @@ const isActive = (path: string) => computed(() => sidebarStore.activePath.starts
               class="nav-link"
               :class="{ 'active-link': isActive('/setting').value }"
               href="/setting"
-              >Setting</a
+              >設定</a
             >
           </li>
           <li class="nav-item">
@@ -89,7 +89,7 @@ const isActive = (path: string) => computed(() => sidebarStore.activePath.starts
               <img src="../assets/icons/savings.svg" alt="savings" class="white-icon" />
             </div>
             <a class="nav-link" :class="{ 'active-link': isActive('/money').value }" href="/money"
-              >Money Manage</a
+              >お金管理</a
             >
           </li>
           <li class="nav-item">
@@ -115,7 +115,7 @@ const isActive = (path: string) => computed(() => sidebarStore.activePath.starts
               class="nav-link"
               :class="{ 'active-link': isActive('/messages').value }"
               href="/messages"
-              >Messages</a
+              >メッセージ</a
             >
           </li>
         </ul>
@@ -133,7 +133,7 @@ const isActive = (path: string) => computed(() => sidebarStore.activePath.starts
                   alt="settings_heart"
                   style="margin-right: 8px"
                 />
-                <div class="menu">Setting</div>
+                <div class="menu">設定</div>
               </a>
             </li>
             <li>
@@ -143,13 +143,13 @@ const isActive = (path: string) => computed(() => sidebarStore.activePath.starts
                   alt="message_pink"
                   style="margin-right: 8px"
                 />
-                <div class="menu">Messages</div>
+                <div class="menu">メッセージ</div>
               </a>
             </li>
             <li>
               <a class="dropdown-item" href="/logout">
                 <img src="../assets/icons/logout.svg" alt="logout" style="margin-right: 8px" />
-                <div class="menu">Sign out</div>
+                <div class="menu">ログアウト</div>
               </a>
             </li>
           </ul>

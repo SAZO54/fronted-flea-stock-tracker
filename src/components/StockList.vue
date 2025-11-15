@@ -134,7 +134,7 @@ function showMoreItems(): void {
   <div>
     <div class="header">
       <button type="button" class="btn btn-pink new-create" @click="createTransition()">
-        <div style="padding-left: 5px">New Create</div>
+        <div style="padding-left: 5px">新規作成</div>
         <img
           src="../assets/icons/add_box.svg"
           alt="add_box"

@@ -420,7 +420,7 @@ watch(workId, () => {
       />
     </div>
     <div class="card component-card">
-      <div class="card-text">Create</div>
+      <div class="card-text">新規作成</div>
       <div class="card-body">
         <form>
           <span class="error-message" style="text-align: center">{{ uploadedImagesError }}</span>
@@ -480,7 +480,7 @@ watch(workId, () => {
           <span class="error-message">{{ productNameError }}</span>
           <div class="mb-3">
             <label for="inputItemName" class="form-label"
-              >Product Name<span class="asterisk">*</span></label
+              >商品名<span class="asterisk">*</span></label
             >
             <input
               id="inputItemName"
@@ -493,7 +493,7 @@ watch(workId, () => {
           </div>
           <span class="error-message">{{ productCodeError }}</span>
           <div class="mb-3">
-            <label for="inputDisplayName" class="form-label">Product Code</label>
+            <label for="inputDisplayName" class="form-label">商品コード</label>
             <input
               id="inputDisplayName"
               v-model="productCode"
@@ -505,7 +505,7 @@ watch(workId, () => {
           <span class="error-message">{{ priceError }}</span>
           <div class="mb-3">
             <label for="inputQuantityStock" class="form-label wid-175"
-              >List Price<span class="asterisk">*</span></label
+              >商品価格<span class="asterisk">*</span></label
             >
             <input
               id="inputQuantityStock"
@@ -519,7 +519,7 @@ watch(workId, () => {
           </div>
           <span class="error-message">{{ descriptionError }}</span>
           <div class="mb-3">
-            <label for="inputItemDesciption" class="form-label">Description</label>
+            <label for="inputItemDesciption" class="form-label">商品詳細</label>
             <textarea
               id="inputItemDesciption"
               v-model="description"
@@ -531,7 +531,7 @@ watch(workId, () => {
           <span class="error-message">{{ quantityInStockError }}</span>
           <div class="mb-3">
             <label for="inputQuantityStock" class="form-label wid-175"
-              >Quantity in stock<span class="asterisk">*</span></label
+              >在庫数<span class="asterisk">*</span></label
             >
             <input
               id="inputQuantityStock"
@@ -544,7 +544,7 @@ watch(workId, () => {
             />
           </div>
           <div class="mb-3">
-            <label for="inputItemTag" class="form-label">Product Tag</label>
+            <label for="inputItemTag" class="form-label">商品タグ</label>
             <input
               id="inputItemTag"
               type="hidden"
@@ -561,7 +561,7 @@ watch(workId, () => {
           </div>
           <span class="error-message">{{ productUrlError }}</span>
           <div class="mb-3">
-            <label for="inputItemName" class="form-label">Product URL</label>
+            <label for="inputItemName" class="form-label">商品URL</label>
             <input
               id="inputItemName"
               v-model="productUrl"
@@ -574,7 +574,7 @@ watch(workId, () => {
           <span class="error-message">{{ workIdError }}</span>
           <div class="mb-3">
             <label for="inputQuantityStock" class="form-label wid-175"
-              >Work<span class="asterisk">*</span></label
+              >作品<span class="asterisk">*</span></label
             >
             <select
               id="workSelect"
@@ -594,7 +594,7 @@ watch(workId, () => {
           <span class="error-message">{{ characterIdError }}</span>
           <div class="mb-3">
             <label for="workSelect" class="form-label wid-175"
-              >Character<span class="asterisk">*</span></label
+              >キャラクター<span class="asterisk">*</span></label
             >
             <select
               id="characterSelect"
@@ -614,7 +614,7 @@ watch(workId, () => {
           <span class="error-message">{{ categoryIdError }}</span>
           <div class="mb-3">
             <label for="inputQuantityStock" class="form-label wid-175"
-              >Category<span class="asterisk">*</span></label
+              >カテゴリ<span class="asterisk">*</span></label
             >
             <select
               id="categorySelect"
@@ -634,7 +634,7 @@ watch(workId, () => {
           <span class="error-message">{{ storageSpaceIdError }}</span>
           <div class="mb-3">
             <label for="inputQuantityStock" class="form-label wid-175"
-              >Storage Space<span class="asterisk">*</span></label
+              >保管場所<span class="asterisk">*</span></label
             >
             <select
               id="storageSpaceSelect"
@@ -670,10 +670,10 @@ watch(workId, () => {
               style="margin-right: 5%; width: auto"
               @click.prevent="openExhibitModal()"
             >
-              Add Exhibit Detail
+              出品情報を追加
             </button>
             <button type="submit" class="btn btn-primary submit-btn" @click.prevent="setProducts">
-              Submit
+              登録
             </button>
           </div>
         </form>
@@ -878,7 +878,7 @@ watch(workId, () => {
 .btn {
   width: 100px;
   border-radius: 3px;
-  font-size: 19px;
+  font-size: 16px;
 }
 
 .disabled-btn,
@@ -964,7 +964,7 @@ watch(workId, () => {
 .form-label {
   width: 200px;
   color: #786569;
-  font-size: large;
+  font-size: 16px;
   margin-bottom: 0 !important;
   padding-left: 20px;
   text-align: left;
@@ -998,13 +998,13 @@ watch(workId, () => {
   padding-top: 5px !important;
   margin-bottom: 30px !important;
   font-weight: 600;
-  font-size: larger;
+  font-size: 16px;
 }
 
 .form-control {
   margin-right: 30px;
   line-height: inherit !important;
-  font-size: large;
+  font-size: 16px;
 }
 
 .form-30 {
@@ -1019,7 +1019,7 @@ watch(workId, () => {
 .form-check {
   margin-left: 20px;
   margin-bottom: 38px !important;
-  font-size: large;
+  font-size: 16px;
   text-align: left;
   color: #786569;
 }
@@ -1033,7 +1033,7 @@ watch(workId, () => {
 
 .custom-tags-input {
   padding: 8px;
-  font-size: large;
+  font-size: 16px;
   border: var(--bs-border-width) solid var(--bs-border-color);
 }
 

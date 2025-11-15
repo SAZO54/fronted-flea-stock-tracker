@@ -229,14 +229,14 @@ defineExpose({
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 id="exhibitModalLabel" class="modal-title">Exhibit Info</h5>
+            <h5 id="exhibitModalLabel" class="modal-title">出品詳細</h5>
             <button type="button" class="btn-close" aria-label="Close" @click="hideModal"></button>
           </div>
           <div class="modal-body">
             <form>
               <div class="mb-3">
                 <label for="inputQuantityStock" class="form-label wid-175"
-                  >Exhibit Platform<span class="asterisk">*</span></label
+                  >出品プラットフォーム<span class="asterisk">*</span></label
                 >
                 <select
                   id="platformSelect"
@@ -257,7 +257,7 @@ defineExpose({
               <span class="error-message-modal">{{ platformError }}</span>
               <div class="mb-3">
                 <label for="exhibitName" class="form-label"
-                  >Display Name<span class="asterisk">*</span></label
+                  >出品名<span class="asterisk">*</span></label
                 >
                 <textarea
                   id="exhibitName"
@@ -271,7 +271,7 @@ defineExpose({
               </div>
               <span class="error-message-modal">{{ exhibitNameError }}</span>
               <div class="mb-3">
-                <label for="currency" class="form-label">Currency</label>
+                <label for="currency" class="form-label">通貨</label>
                 <select
                   id="currencySelect"
                   v-model="currency"
@@ -290,7 +290,7 @@ defineExpose({
               </div>
               <span class="error-message-modal">{{ currencyError }}</span>
               <div class="mb-3">
-                <label for="minPrice" class="form-label">Min Price</label>
+                <label for="minPrice" class="form-label">最低金額</label>
                 <input
                   id="minPrice"
                   v-model="minPrice"
@@ -304,7 +304,7 @@ defineExpose({
               </div>
               <span class="error-message-modal">{{ minPriceError }}</span>
               <div class="mb-3">
-                <label for="currentPrice" class="form-label">Current Exhibit Price</label>
+                <label for="currentPrice" class="form-label">現在の出品価格</label>
                 <input
                   id="currentPrice"
                   v-model="currentPrice"
@@ -319,7 +319,7 @@ defineExpose({
               <span class="error-message-modal">{{ currentPriceError }}</span>
               <div class="mb-3">
                 <label for="exhibitQuantity" class="form-label"
-                  >Number of Exhibits<span class="asterisk">*</span></label
+                  >出品数<span class="asterisk">*</span></label
                 >
                 <input
                   id="exhibitQuantity"
@@ -340,7 +340,7 @@ defineExpose({
               Cancel
             </button>
             <button type="button" class="btn btn-secondary add-btn" @click="addExhibit">
-              Add Exhibit Info
+              出品情報を追加
             </button>
           </div>
         </div>
