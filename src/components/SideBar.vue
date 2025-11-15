@@ -165,7 +165,7 @@ const isActive = (path: string) => computed(() => sidebarStore.activePath.starts
   height: 100%;
   left: 0;
   top: 0;
-  background-color: #dcedff75;
+  background-color: #bacce075;
   transition: left 0.3s;
   box-shadow: 4px 0 6px -1px #a9b1c5;
   position: relative;

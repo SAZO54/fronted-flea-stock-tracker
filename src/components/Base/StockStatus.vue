@@ -13,7 +13,7 @@ function stockDetailTransition(): void {
 
 <template>
   <div class="card component-card">
-    <div class="card-text">Stock Status</div>
+    <div class="card-text">Stock Status（在庫状況）</div>
     <div class="card-body">
       <div class="table-responsive">
         <table class="table">

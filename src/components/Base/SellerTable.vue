@@ -45,7 +45,8 @@ const props = defineProps<{
 }
 
 .card-text {
-  color: #b7a5ac;
+  color: #8f8085;
+  font-weight: bold;
   font-size: 25px;
   text-align: left;
   padding: 4px 0 0 4px;
@@ -58,7 +59,8 @@ const props = defineProps<{
 }
 
 .component-card {
-  background-color: #dcedff75;
+  background: linear-gradient(to bottom, #f6e7ed, #dcedff75);
+
   border-radius: 10px;
   color: #d06179;
   border: #b2b8c6;
